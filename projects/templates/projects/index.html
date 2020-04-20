@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}
+    {{ "All Projects" }}
+{% endblock %}
+{% block container %}
+    <div class="container d-flex flex-row flex-wrap">
+
+        {% for project in projects %}
+            <div class="card m-4 border rounded-5" style="width: 18rem;">
+                {#            <img class="card-img-top" src="..." alt="Card image cap">#}
+                <div class="card-body">
+                    <h5 class="card-title"><b>{{ project.title }}</b></h5>
+                    <p class="card-text text-truncate">{{ project.details }}</p>
+                    <h6 class="card-subtitle mb-2"><b>Total Target:</b> {{ project.target }}</h6>
+                    <h6 class="card-subtitle mb-2"><b>Current Target:</b> {{ project.current }}$</h6>
+                    <a href="#" class="btn btn-primary">More Details</a>
+                </div>
+            </div>
+        {% empty %}
+            <h3>No Projects</h3>
+        {% endfor %}
+
+
+    </div>
+
+{% endblock %}
