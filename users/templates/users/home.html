@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    {{ "Home" }}
+{% endblock %}
+{% block links %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+{% endblock %}
+{% block container %}
+
+    <div class="d-flex flex-column border m-3 p-4" id="categories_container">
+        <div id="category_selector_container">
+            <label class="my-1 mr-2 d-inline" for="cat_selector">Select By Category</label>
+            <select class="custom-select form-control-sm  my-1 mr-sm-2 d-inline" style="width: 8rem;"
+                    id="cat_selector">
+                {% if  categories.curr_category == 0 %}
+                    <option value="0" selected>All</option>
+                {% else %}
+                    <option value="0">All</option>
+                {% endif %}
+                {% for category in categories.categories %}
+                    {% if category.id ==  categories.curr_category %}
+                        <option value="{{ category.id }}" selected>{{ category.name }}</option>
+                    {% else %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endif %}
+                {% endfor %}
+
+            </select>
+        </div>
+        <div class="pagination_categories">
+            <div class="d-flex flex-row justify-content-between align-items-center w-100">
+                <div>
+                    {% if projects_by_category.page_obj.has_previous %}
+                        <a href="?cat_id={{ categories.curr_category }}&page_cat={{ projects_by_category.page_obj.previous_page_number }}"><i
+                                class="material-icons">arrow_back_ios</i></a>
+                    {% endif %}
+                </div>
+                <div class="projects_by_category">
+                    {% for project in projects_by_category.projects %}
+                        <div class="card  border rounded-5" style="width: 18rem;">
+                            {#            <img class="card-img-top" src="..." alt="Card image cap">#}
+                            <div class="card-body">
+                                <h5 class="card-title"><b>{{ project.title }}</b></h5>
+                                <p class="card-text text-truncate">{{ project.details }}</p>
+                                <h6 class="card-subtitle mb-2"><b>Total Target:</b> {{ project.target }}</h6>
+                                <h6 class="card-subtitle mb-2"><b>Current Target:</b> {{ project.current }}$</h6>
+                                <a href="#" class="btn btn-primary btn-sm">More Details</a>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <h3>No Projects</h3>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    {% if projects_by_category.page_obj.has_next %}
+                        <a href="?cat_id={{ categories.curr_category }}&page_cat={{ projects_by_category.page_obj.next_page_number }}"><i
+                                class="material-icons">arrow_forward_ios</i></a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'users/js/home.js' %}"></script>
+{% endblock %}

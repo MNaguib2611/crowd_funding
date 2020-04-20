@@ -1,6 +1,8 @@
 from django.urls import path
 
-urlpatterns = [
-    # path('projects', user_projects,name="user_projects"),
+from users.views import home
 
+urlpatterns = [
+    path('home', home,name="home"),
+    # path('home/<int:cat_id>', get_projects_by_category,name="get_projects_by_category"),
 ]
