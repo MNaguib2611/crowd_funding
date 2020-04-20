@@ -1,2 +1,8 @@
 Django==2.1
+django-braces==1.14.0
+django-countries==6.1.2
+django-model-utils==4.0.0
+mysqlclient==1.4.6
 pytz==2019.3
+six==1.14.0
+swapper==1.1.2.post1
