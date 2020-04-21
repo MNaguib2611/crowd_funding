@@ -1,13 +1,13 @@
 import json
 
 from django.core.paginator import Paginator
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import JsonResponse
 
 # Create your views here.
 from categories.models import Category
-from projects.models import Project
+from projects.models import Project, Donation
 from django.core import serializers
 
 
@@ -48,3 +48,14 @@ def get_projects_by_category(id):
     return projects
     # return JsonResponse(data)
 
+def donate(req):
+    amount = int(req.POST.get('donation-val'))
+    id=int(req.POST.get('project_id'))
+    print(amount,id)
+    project = Project.objects.get(id=id)
+    if project.target - project.current >= amount:
+        donation = Donation(project_id=id,user_id=1,amount=amount)
+        donation.save()
+        project.current = project.current+amount
+        project.save()
+    return redirect(req.META.get('HTTP_REFERER'))
