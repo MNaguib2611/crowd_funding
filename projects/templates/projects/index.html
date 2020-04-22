@@ -30,7 +30,7 @@
                             data-target-donation="{{ project.target }}"
                             data-current-donation="{{ project.current }}"
                             data-target="#donate-model" {% if project.target == project.current %} {{ "disabled" }} {% endif %}>Donate</button>
-                    <a href="#" class="btn btn-danger btn-sm">Report</a>
+                    <a href="{% url 'report_project' project.id %}" ><button {% if project.is_reported %} {{ "disabled" }} {% endif %} class="btn btn-danger btn-sm" >Report</button></a>
                 </div>
             </div>
         {% empty %}
