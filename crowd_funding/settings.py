@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'crowd_funding',
         'USER': 'root',
         # 'PASSWORD': 'ITIintake40',
-        'PASSWORD': '41195',
+        # 'PASSWORD': '41195',
         'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
         # 'PORT': '3306',
         "OPTIONS": {

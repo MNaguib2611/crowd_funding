@@ -1,9 +1,10 @@
 from django.http import HttpResponse
 from .models import CustomUser
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Avg
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from datetime import datetime
 
 
 # Create your views here.
@@ -36,7 +37,12 @@ def home(req):
     page_number_latest_featured_projects = req.GET.get('page_latest_featured_project')
     page_obj_latest_featured_projects = paginator_latest_featured_projects.get_page(page_number_latest_featured_projects)
 
-
+    highest_rated_projects = project_is_reported(Project.objects.filter(end_date__gt=datetime.now()).annotate(rate_avg=Avg('rate__rate')).order_by('-rate_avg')[:5])
+    print(highest_rated_projects)
+    paginator_highest_rated_projects = Paginator(highest_rated_projects, 3)  # Show 25 contacts per page.
+    page_number_highest_rated_projects = req.GET.get('page_highest_rated_projects')
+    page_obj_highest_rated_projects = paginator_highest_rated_projects.get_page(
+        page_number_highest_rated_projects)
 
     context = {
         "projects_by_category":
@@ -52,6 +58,9 @@ def home(req):
         "page_obj_latest_featured_projects":
             {'page_obj': page_obj_latest_featured_projects,
              'projects': page_obj_latest_featured_projects.object_list},
+        "highest_rated_projects":
+            {'page_obj': page_obj_highest_rated_projects,
+             'projects': page_obj_highest_rated_projects.object_list},
     }
     # print(context)
     return render(req, 'users/home.html',context)
