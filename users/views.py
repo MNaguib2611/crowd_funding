@@ -1,10 +1,12 @@
 from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 
 # Create your views here.
 from categories.models import Category
-from projects.models import Project, Donation, Report
+from projects.models import Project, Donation, Report, Tag
 from utils.utils import project_is_reported
 
 
@@ -78,4 +80,7 @@ def report_project(req,id):
     return redirect(req.META.get('HTTP_REFERER'))
 
 
-
+def search(req):
+    search_value = req.GET.get('searchValue')
+    projects = Project.objects.filter(Q(tag__tag__icontains=search_value) |  Q(title__icontains=search_value)).distinct().values()
+    return JsonResponse(list(projects),safe=False)
