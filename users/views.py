@@ -10,6 +10,7 @@ from utils.utils import project_is_reported
 
 def home(req):
     categories = Category.objects.all()
+
     latest_projects = project_is_reported(Project.objects.all().order_by('-start_date')[:5])
     paginator_latest_projects = Paginator(latest_projects, 3)  # Show 25 contacts per page.
     page_number_latest_projects = req.GET.get('page_lat_pro')
@@ -19,6 +20,13 @@ def home(req):
     paginator_category = Paginator(projects_by_category, 3)  # Show 25 contacts per page.
     page_number = req.GET.get('page_cat')
     page_obj = paginator_category.get_page(page_number)
+
+    latest_featured_projects = project_is_reported(Project.objects.filter(featured=1).order_by('-start_date')[:5])
+    paginator_latest_featured_projects = Paginator(latest_featured_projects, 3)  # Show 25 contacts per page.
+    page_number_latest_featured_projects = req.GET.get('page_latest_featured_project')
+    page_obj_latest_featured_projects = paginator_latest_featured_projects.get_page(page_number_latest_featured_projects)
+
+
 
     context = {
         "projects_by_category":
@@ -31,6 +39,9 @@ def home(req):
         "latest_projects":
             {'page_obj': page_obj_latest_projects,
              'projects': page_obj_latest_projects.object_list},
+        "page_obj_latest_featured_projects":
+            {'page_obj': page_obj_latest_featured_projects,
+             'projects': page_obj_latest_featured_projects.object_list},
     }
     # print(context)
     return render(req, 'users/home.html',context)
