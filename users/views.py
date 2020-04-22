@@ -1,3 +1,5 @@
+from django.http import HttpResponse
+from .models import CustomUser
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
@@ -8,6 +10,12 @@ from django.shortcuts import render, redirect
 from categories.models import Category
 from projects.models import Project, Donation, Report, Tag
 from utils.utils import project_is_reported
+
+def view_user_profile(request, id):
+    user = CustomUser.objects.filter(id=id)
+    user = user[0]
+    user_data = {'user': user}
+    return render(request, 'user_profile.html', user_data)
 
 
 def home(req):
