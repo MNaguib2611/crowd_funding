@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block container %}
+    <div class="container" id="user_profile">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>Personal Info</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    Profile
+                </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-secondary btn-lg btn-block cardElement">
+                        <div class="row">  
+                            <div class="col">
+                                <h6 class="align-middle title">PHOTO</h6>   
+                            </div>
+                            <div class="col-6" >
+                                <p> You can change photo </p>
+                            </div>
+                            <div class="col">
+                                <img src="/files/images/{{user.picture}}" alt="profile-picture">
+                            </div>
+                        </div>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-lg btn-block cardElement">
+                        <div class="row">  
+                            <div class="col">
+                                <h6 class="align-middle title">NAME</h6>  
+                            </div>
+                            <div class="col-6" >
+                                <p> {{ user.first_name }} {{ user.last_name }}</p>
+                            </div>
+                            <div class="col">
+                                <a href="#">EDIT</a>
+                            </div>
+                        </div>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-lg btn-block cardElement">
+                        <div class="row">  
+                            <div class="col">
+                                <h6 class="align-middle title">BIRTH-DATE</h6>   
+                            </div>
+                            <div class="col-6" >
+                                <p> You can add birth date </p>
+                            </div>
+                            <div class="col">
+                                <a href="#">ADD</a>
+                            </div>
+                        </div>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-lg btn-block cardElement">
+                        <div class="row">  
+                            <div class="col">
+                                <h6 class="align-middle title">COUNTRY</h6>   
+                            </div>
+                            <div class="col-6" >
+                                <p> You can add country </p>
+                            </div>
+                            <div class="col">
+                                <a href="#">ADD</a>  
+                            </div>
+                        </div>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-lg btn-block lastCardElement">
+                        <div class="row">  
+                            <div class="col">
+                                <h6 class="align-middle title">PASSWORD</h6>   
+                            </div>
+                            <div class="col-6" >
+                                <input type="password" name="pass" value="{{user.password}}" class="passBtn" />
+                            </div>
+                            <div class="col">
+                                <a href="#">EDIT</a>  
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <br> <br>
+        <div class="row">
+            <div class="card" style="width:80%">
+                <div class="card-header">
+                    Contact info
+                </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-secondary btn-lg btn-block cardElement">
+                        <div class="row">  
+                            <div class="col">
+                                <h6 class="align-middle title">EMAIL</h6>   
+                            </div>
+                            <div class="col-6" >
+                                <p>{{ user.email }} </p>
+                            </div>
+                            <div class="col">
+                            </div>
+                        </div>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-lg btn-block cardElement">
+                        <div class="row">  
+                            <div class="col">
+                                <h6 class="align-middle title">PHONE</h6>   
+                            </div>
+                            <div class="col-6" >
+                                <p> {{ user.phone }} </p>
+                            </div>
+                            <div class="col">
+                                <a href="#">EDIT</a>   
+                            </div>
+                        </div>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-lg btn-block lastCardElement">
+                        <div class="row">  
+                            <div class="col">
+                                <h6 class="align-middle title"> FACEBOOK-PROFILE</h6>   
+                            </div>
+                            <div class="col-6" >
+                                <p> You can add facebook profile </p>
+                            </div>
+                            <div class="col">
+                                <a href="#">ADD</a>   
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br> <br>
+{% endblock %}
