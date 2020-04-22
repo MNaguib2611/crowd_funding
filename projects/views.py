@@ -12,8 +12,6 @@ def index(req):
     context = {
         'projects':projects
     }
-    print("AAA",context)
-    # return HttpResponse('<h1>AAAAA</h1>')
     return render(req, 'projects/index.html', context)
 
 

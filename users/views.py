@@ -5,16 +5,17 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from categories.models import Category
 from projects.models import Project, Donation, Report
+from utils.utils import project_is_reported
 
 
 def home(req):
     categories = Category.objects.all()
-    latest_projects = Project.objects.all().order_by('-start_date')[:5]
+    latest_projects = project_is_reported(Project.objects.all().order_by('-start_date')[:5])
     paginator_latest_projects = Paginator(latest_projects, 3)  # Show 25 contacts per page.
     page_number_latest_projects = req.GET.get('page_lat_pro')
     page_obj_latest_projects = paginator_latest_projects.get_page(page_number_latest_projects)
 
-    projects_by_category = get_projects_by_category(req.GET.get('cat_id'))
+    projects_by_category = project_is_reported(get_projects_by_category(req.GET.get('cat_id')))
     paginator_category = Paginator(projects_by_category, 3)  # Show 25 contacts per page.
     page_number = req.GET.get('page_cat')
     page_obj = paginator_category.get_page(page_number)

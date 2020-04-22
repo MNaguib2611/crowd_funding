@@ -29,8 +29,14 @@
                             data-project_id="{{ project.id }}"
                             data-target-donation="{{ project.target }}"
                             data-current-donation="{{ project.current }}"
-                            data-target="#donate-model" {% if project.target == project.current %} {{ "disabled" }} {% endif %}>Donate</button>
-                    <a href="{% url 'report_project' project.id %}" ><button {% if project.is_reported %} {{ "disabled" }} {% endif %} class="btn btn-danger btn-sm" >Report</button></a>
+                            data-target="#donate-model" {% if project.target == project.current %}
+                        {{ "disabled" }} {% endif %}>Donate
+                    </button>
+                    <a href="{% url 'report_project' project.id %}">
+                        <button {% if project.is_reported %} {{ "disabled" }} {% endif %} class="btn btn-danger btn-sm">
+                            Report
+                        </button>
+                    </a>
                 </div>
             </div>
         {% empty %}
@@ -54,14 +60,15 @@
                     <h4 class="modal-title"
                         id="donateModalLabel"></h4>
                 </div>
-                <form method="post" action="{% url 'donate'  %}">
+                <form method="post" action="{% url 'donate' %}">
                     {% csrf_token %}
                     <input name="project_id" id="project_id" hidden/>
                     <div class="modal-body">
                         <p>
                             Please confirm you would like to donate to
                             <b><span id="project-title"></span></b>
-                            with <input id="donation-val" name="donation-val" type="number" class="w-25 d-inline" min="1" max="" value="1"/> $
+                            with <input id="donation-val" name="donation-val" type="number" class="w-25 d-inline"
+                                        min="1" max="" value="1"/> $
                         </p>
                     </div>
                     <div class="modal-footer">

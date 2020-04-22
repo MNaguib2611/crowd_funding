@@ -38,7 +38,8 @@
                 </div>
                 <div class="projects_by_category d-flex flex-row justify-content-between flex-wrap">
                     {% for project in projects_by_category.projects %}
-                        <div class="card  border rounded-5 m-2 " style="width: 18rem;">
+                        <div class="card m-4 border rounded-5" style="width: 18rem;">
+
                             {#            <img class="card-img-top" src="..." alt="Card image cap">#}
                             <div class="card-body">
                                 <h5 class="card-title"><b>{{ project.title }}</b></h5>
@@ -46,6 +47,20 @@
                                 <h6 class="card-subtitle mb-2"><b>Total Target:</b> {{ project.target }}</h6>
                                 <h6 class="card-subtitle mb-2"><b>Current Target:</b> {{ project.current }}$</h6>
                                 <a href="#" class="btn btn-primary btn-sm">More Details</a>
+                                <button id="donate" class="btn btn-info btn-sm" data-toggle="modal"
+                                        data-title="{{ project.title }}"
+                                        data-project_id="{{ project.id }}"
+                                        data-target-donation="{{ project.target }}"
+                                        data-current-donation="{{ project.current }}"
+                                        data-target="#donate-model" {% if project.target == project.current %}
+                                    {{ "disabled" }} {% endif %}>Donate
+                                </button>
+                                <a href="{% url 'report_project' project.id %}">
+                                    <button {% if project.is_reported %} {{ "disabled" }} {% endif %}
+                                            class="btn btn-danger btn-sm">
+                                        Report
+                                    </button>
+                                </a>
                             </div>
                         </div>
                     {% empty %}
@@ -79,7 +94,8 @@
 
             <div class="latest_projects d-flex flex-row justify-content-between flex-wrap">
                 {% for project in latest_projects.projects %}
-                    <div class="card  border rounded-5 m-2" style="width: 18rem;">
+                    <div class="card m-4 border rounded-5" style="width: 18rem;">
+
                         {#            <img class="card-img-top" src="..." alt="Card image cap">#}
                         <div class="card-body">
                             <h5 class="card-title"><b>{{ project.title }}</b></h5>
@@ -87,6 +103,20 @@
                             <h6 class="card-subtitle mb-2"><b>Total Target:</b> {{ project.target }}</h6>
                             <h6 class="card-subtitle mb-2"><b>Current Target:</b> {{ project.current }}$</h6>
                             <a href="#" class="btn btn-primary btn-sm">More Details</a>
+                            <button id="donate" class="btn btn-info btn-sm" data-toggle="modal"
+                                    data-title="{{ project.title }}"
+                                    data-project_id="{{ project.id }}"
+                                    data-target-donation="{{ project.target }}"
+                                    data-current-donation="{{ project.current }}"
+                                    data-target="#donate-model" {% if project.target == project.current %}
+                                {{ "disabled" }} {% endif %}>Donate
+                            </button>
+                            <a href="{% url 'report_project' project.id %}">
+                                <button {% if project.is_reported %} {{ "disabled" }} {% endif %}
+                                        class="btn btn-danger btn-sm">
+                                    Report
+                                </button>
+                            </a>
                         </div>
                     </div>
                 {% empty %}
@@ -105,7 +135,49 @@
     </div>
 
 
+
+      <div class="modal fade" id="donate-model"
+         tabindex="-1" role="dialog"
+         aria-labelledby="donateModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header mt-3 d-flex flex-row align-self-start">
+                    <button type="button" class="close mr-1"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"
+                        id="donateModalLabel"></h4>
+                </div>
+                <form method="post" action="{% url 'donate' %}">
+                    {% csrf_token %}
+                    <input name="project_id" id="project_id" hidden/>
+                    <div class="modal-body">
+                        <p>
+                            Please confirm you would like to donate to
+                            <b><span id="project-title"></span></b>
+                            with <input id="donation-val" name="donation-val" type="number" class="w-25 d-inline"
+                                        min="1" max="" value="1"/> $
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal">Close
+                        </button>
+                        <span class="pull-right">
+                          <button type="submit" class="btn btn-success">
+                            Donate
+                          </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 {% block scripts %}
     <script src="{% static 'users/js/home.js' %}"></script>
+    <script src="{% static 'users/js/donate.js' %}"></script>
 {% endblock %}
