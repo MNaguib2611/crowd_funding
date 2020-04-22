@@ -1,18 +1,13 @@
-import json
-
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.http import JsonResponse
+
 
 # Create your views here.
 from categories.models import Category
 from projects.models import Project, Donation, Report
-from django.core import serializers
 
 
 def home(req):
-    # print(type(req.GET.get('cat_id')))
     categories = Category.objects.all()
     latest_projects = Project.objects.all().order_by('-start_date')[:5]
     paginator_latest_projects = Paginator(latest_projects, 3)  # Show 25 contacts per page.
@@ -72,10 +67,3 @@ def report_project(req,id):
 
 
 
-def project_is_reported(projects):
-    user_id=1
-    for project in projects:
-        is_reported = Report.objects.filter(project_id=project.id,user_id=user_id).count() != 0
-        project.is_reported = is_reported
-        # print(is_reported)
-    return projects
