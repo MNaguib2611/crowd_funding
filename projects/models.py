@@ -1,6 +1,16 @@
 from django.db import models
-from users.models import User
+from users.models import CustomUser as User
 from categories.models import Category
+from enum import Enum
+
+    
+
+   
+
+
+
+
+
 
 
 class Project (models.Model):
@@ -45,19 +55,23 @@ class Donation (models.Model):
     amount   = models.IntegerField()
      
 
-
-
-class Report (models.Model):
-    user     = models.ForeignKey(User, on_delete=models.CASCADE)
-    project  = models.ForeignKey(Project, on_delete=models.CASCADE)
-    # type  ->project or comment
-
 class Comment (models.Model):
     user     = models.ForeignKey(User, on_delete=models.CASCADE)
     project  = models.ForeignKey(Project, on_delete=models.CASCADE)
     comment    = models.CharField(max_length=255) 
     def __str__(self):
         return "%s" % (self.comment)
+
+class Report (models.Model):
+    user     = models.ForeignKey(User, on_delete=models.CASCADE)
+    project  = models.ForeignKey(Project, on_delete=models.CASCADE)
+    #if comment id is null ->project report
+    #if comment id is not null ->comment report
+    comment  = models.ForeignKey(Comment, on_delete=models.CASCADE,null=True)
+    
+   
+
+
 
 
 class Rate (models.Model):

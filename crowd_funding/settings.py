@@ -60,7 +60,6 @@ TEMPLATES = [
         'DIRS': [(os.path.join(BASE_DIR, 'templates'))],
         'APP_DIRS': True,
         'OPTIONS': {
-            # 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -86,6 +85,8 @@ DATABASES = {
         'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
         # 'PORT': '3306',
         "OPTIONS": {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+
             # "unix_socket": "/tmp/mysql-dev.sock",
             'unix_socket': '/opt/lampp/var/mysql/mysql.sock',
         }
@@ -110,6 +111,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -126,4 +129,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/files/'
+STATIC_URL = '/static/'
+AUTH_USER_MODEL = 'users.CustomUser'
