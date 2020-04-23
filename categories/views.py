@@ -28,6 +28,12 @@ def index(request):
 
 def delete(request, id):
     category = Category.objects.get(pk=id)
-    category.delete()
+
+    if request.method == "GET":
+        category.delete()
+
+    if request.method == "POST":
+        category.name = request.POST['name']
+        category.save()
 
     return redirect('/admin/category')

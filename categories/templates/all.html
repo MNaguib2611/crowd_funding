@@ -18,31 +18,36 @@
         Add new category
       </button>
     </div>
-</div>
-<hr>
-{% if msg != None %}
-  <div class="alert alert-{{alert}}" role="alert">
-    {{msg}}
-  </div>
-{% endif %}
-<table class="table">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Created at</th>
-        <th scope="col"></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for category in categories %}
+  {% if msg != None %}
+    <div class="alert alert-{{alert}}" role="alert">
+      {{msg}}
+    </div>
+  {% endif %}
+  <div class="container">
+    <table class="table">
+      <thead class="thead-dark">
         <tr>
-            <th scope="row">{{category.name}}</th>
-            <td>{{category.created_at}}</td>
-            <td><a href="/admin/category/{{category.id}}" class="btn btn-danger">Delete</a></td>
+          <th scope="col">Name</th>
+          <th scope="col">Created at</th>
+          <th scope="col"></th>
+          <th scope="col"></th>
         </tr>
-      {% endfor %}
-    </tbody>
-</table>
+      </thead>
+      <tbody>
+        {% for category in categories %}
+          <tr>
+              <th scope="row" id="{{category.name}}">{{category.name}}</th>
+              <td>{{category.created_at}}</td>
+              <td><button type="button" onclick="editCategory(`{{category.id}}`, `{{category.name}}`)" class="btn btn-warning" data-toggle="modal" data-target="#exampleModal">
+                Edit
+              </button></td>
+              <td><a href="/admin/category/{{category.id}}" class="btn btn-danger">Delete</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -54,7 +59,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form method="POST" action="/admin/category/">
+      <form id="categoryForm" method="POST" action="/admin/category/">
         {% csrf_token %}
         <div class="modal-body">
             <div class="form-group">
@@ -74,5 +79,12 @@
 {% endblock %}
 {% block scripts %}
     <script>
+      function editCategory(id, name){
+        let catName = document.getElementById('InputName1');
+        catName.value = name;
+
+        let form = document.getElementById('categoryForm');
+        form.setAttribute('action', `/admin/category/${id}`);
+      }
     </script>
 {% endblock %}
