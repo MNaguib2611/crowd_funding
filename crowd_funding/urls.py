@@ -21,7 +21,7 @@ urlpatterns = [
     path('', include('users.urls')),
 
     # Admin routes
-    path('admin/', include('crowd_funding.admin_urls'))
+    path('admin/', include('crowd_funding.admin_urls')),
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
 ]

@@ -96,6 +96,13 @@ def report_project(req,id):
 
     return redirect(req.META.get('HTTP_REFERER'))
 
+def report_comment(req,project_id,comment_id):
+    user_id = 1
+    report = Report(user_id=user_id,project_id=project_id,comment_id=comment_id)
+    report.save()
+
+    return redirect(req.META.get('HTTP_REFERER'))
+
 
 def search(req):
     search_value = req.GET.get('searchValue')

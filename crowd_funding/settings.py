@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "django_static_fontawesome",
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -80,7 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'crowd_funding',
         'USER': 'root',
-        # 'PASSWORD': 'ITIintake40',
+        'PASSWORD': '',
         # 'PASSWORD': '41195',
         'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
         # 'PORT': '3306',
@@ -88,7 +89,7 @@ DATABASES = {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 
             # "unix_socket": "/tmp/mysql-dev.sock",
-            'unix_socket': '/opt/lampp/var/mysql/mysql.sock',
+            # 'unix_socket': '/opt/lampp/var/mysql/mysql.sock',
         }
     }
 }

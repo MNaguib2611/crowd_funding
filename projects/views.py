@@ -1,10 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.db.models import Avg
+from utils.utils import project_is_reported ,comment_is_reported
+from .models import Project, Report, Picture, Tag, Donation,Rate,Comment
+import math
+import json
 
-from utils.utils import project_is_reported
-from .models import Project, Report
 
-
-# Create your views here.
+from datetime import datetime
+from django.http import HttpResponse
 
 
 def index(req):
@@ -15,4 +18,70 @@ def index(req):
     return render(req, 'projects/index.html', context)
 
 
+
+def show(req,project_id):
+    user_id=1 #will be replaced by logged user
+    project_data  = Project.objects.get(id=project_id)
+    pictures_data = Picture.objects.filter(project_id=project_id)
+    is_reported=Report.objects.filter(project_id=project_id,user_id=1);
+    comments = comment_is_reported(Comment.objects.filter(project_id=project_id))
+    tags=project_data.tag_set.filter(project_id=project_id).values('tag')
+    project_ids=Tag.objects.filter(tag__in=tags).exclude(project_id =project_id).values('project_id')
+    print(project_ids)
+    projects = Project.objects.filter(id__in=project_ids)[0:5]
+    try:
+        user_rate = Rate.objects.get(project_id=project_id,user_id=1)
+        user_rate_val=f"you rated this project { user_rate }"
+    except Rate.DoesNotExist:
+        user_rate = None
+        user_rate_val=f"you haven't rated this project yet"
+
+
+    avg_rating_dict=Rate.objects.filter(project_id=project_id).aggregate(Avg('rate'))
+    if avg_rating_dict['rate__avg']:
+        avg_rating= math.floor(float(avg_rating_dict['rate__avg'])*10)/10
+    else:
+        avg_rating=0
+
+
+
+    context={
+        'projects' : projects,
+        'project'  : project_data,
+        'time'     :  project_data.end_date.date() < datetime.now().date(),
+        'pictures'  : pictures_data,
+        'reported' : is_reported,
+        'comments' : comments,
+        'user_rate_val': user_rate_val,
+        'rating'   : avg_rating ,
+        'rating_f' : int( ( avg_rating-int(avg_rating) )*10 ),
+        'rating_i' : range(int(avg_rating)),
+        }
+    return render(req, 'projects/show.html', context)
+
+def comment(req):
+    user_id=1
+    new_comment=Comment(
+                comment=req.POST['comment'],
+                project_id=req.POST['project_id'],
+                user_id=1
+                )
+    new_comment.save()            
+    return redirect(f"/projects/{req.POST['project_id'] }" )            
+
+
+
+def rate(req,project_id):
+    try:
+        rate_exists = Rate.objects.get(project_id=project_id,user_id=1)
+    except Rate.DoesNotExist:
+        rate_exists = None
+    if rate_exists:
+        rate_exists.rate=req.GET['rate_val']
+        rate_exists.save()
+        response_message=["Rate has been updated"]
+    else:
+        new_rate = Rate(project_id=project_id,user_id=1,rate=req.GET['rate_val'])
+        new_rate.save()
+    return redirect(f"/projects/{project_id}" )  
 
