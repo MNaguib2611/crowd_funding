@@ -90,7 +90,7 @@ DATABASES = {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 
             # "unix_socket": "/tmp/mysql-dev.sock",
-            #'unix_socket': '/opt/lampp/var/mysql/mysql.sock',
+            # 'unix_socket': '/opt/lampp/var/mysql/mysql.sock',
         }
     }
 }

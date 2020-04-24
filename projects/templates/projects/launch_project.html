@@ -23,9 +23,9 @@
         <label for="ccat">Project Category *</label>
        
         <div class="field-select">
-            <select name="category" id="ccat">
+            <select id="ccat">
                 {% for category in categories %}
-                <option value="{{ category.id }}">{{ category.name }}</option>
+                <option  name="category" value="{{ category.id }}">{{ category.name }}</option>
                 {% endfor %}
             </select>
         </div>

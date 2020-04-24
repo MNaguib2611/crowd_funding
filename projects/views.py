@@ -39,9 +39,11 @@ def launch_project(request):
         # pictures = request.FILES.getlist("picture[]",None)
         # print uploaded_files
         # picture=request.FILES.get('picture', None)
-        
+
         project_instance=Project.objects.create(featured=0,end_date=end_date,start_date=start_date,
-        title=title,details=details,target=target,current=current)
+        title=title,details=details,target=target,current=current
+        # ,category=category
+        )
         for picture in request.FILES.getlist("picture[]",None):
             if picture is not None and picture != '':
                 picture_instance=Picture.objects.create(picture=picture,project=project_instance)
