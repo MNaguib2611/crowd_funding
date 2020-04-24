@@ -22,22 +22,9 @@ def index(req):
     }
     return render(req, 'projects/index.html', context)
 
-
-def admin_projects(request):
-    projects = Project.objects.all()
-
-    return render(request, 'projects/admin/all.html', {'projects':projects})
-
-def admin_delete_projects(request, id):
-    project = Project.objects.get(pk=id)
-    project.delete()
-
-<<<<<<< HEAD
-    return redirect('/admin/projects/')
-=======
 def launch_project(request):
     if request.method.lower() == "get":
-      return render(request,"projects/launch_project.html")
+        return render(request,"projects/launch_project.html")
     elif request.method.lower() =="post":
         title = request.POST["title"]
         # category = request.POST["category"]
@@ -75,4 +62,15 @@ def launch_project(request):
 
         context={"projects":projects,"categories":categories} 
         return render(request,"projects/launch_project.html",context)
->>>>>>> bb64f3bea83fa2c79de7138bbacba8836932f543
+
+
+def admin_projects(request):
+    projects = Project.objects.all()
+
+    return render(request, 'projects/admin/all.html', {'projects':projects})
+
+def admin_delete_projects(request, id):
+    project = Project.objects.get(pk=id)
+    project.delete()
+
+    return redirect('/admin/projects/')
