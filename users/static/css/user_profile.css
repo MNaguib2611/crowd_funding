@@ -1,49 +1,79 @@
-#user_profile .card {
-    width: 80%;
-}
-
-#user_profile .cardElement {
-    background-color: #fff;
-    border: none;
-    border-radius: 0px;
-    border-bottom: solid 1px #d9d9d9
-}
-
-#user_profile .lastCardElement {
-    background-color: #fff;
-    border: none;
-}
-
-#user_profile img {
-    width: 80px;
-    height: 80px
-}
-
-#user_profile .title {
-    color: #737373;
-    text-align: left;
-}
-
-#user_profile p {
-    text-align: left;
-    color: #000
-}
-
-#user_profile .passBtn {
-    text-align: left;
-    color: #000;
-    background-color: #fff;
-    border: none;
-}
-
-#user_profile .cardElement:hover {
-    background-color: #f2f2f2;
-}
-
-#user_profile .lastCardElement:hover {
-    background-color: #f2f2f2;
-}
-
-#user_profile .lastCardElement:hover .passBtn {
-    background-color: #f2f2f2;
-}
+    #user_profile .cardElement {
+        background-color: #fff;
+        border: none;
+        border-radius: 0px;
+        border-bottom: solid 1px #d9d9d9
+    }
+    
+    #user_profile .lastCardElement {
+        background-color: #fff;
+        border: none;
+    }
+    
+    #user_profile h6 {
+        font-size: small;
+    }
+    
+    #user_profile img {
+        width: 80px;
+        height: 80px
+    }
+    
+    #user_profile .title {
+        color: #737373;
+        text-align: left;
+    }
+    
+    #user_profile p {
+        text-align: left;
+        color: #000;
+        font-size: medium;
+    }
+    
+    #user_profile .passBtn {
+        color: #000;
+        background-color: #fff;
+        border: none;
+    }
+    
+    #user_profile .cardElement:hover {
+        background-color: #f2f2f2;
+    }
+    
+    #user_profile .lastCardElement:hover {
+        background-color: #f2f2f2;
+    }
+    
+    #user_profile .lastCardElement:hover .passBtn {
+        background-color: #f2f2f2;
+    }
+    
+    #user_profile .operationCardItem:hover {
+        background-color: #f2f2f2;
+    }
+    
+    #user_profile .deleteBtn {
+        background-color: #d84141;
+        color: white;
+    }
+    
+    .edit_form .edited_value {
+        background-color: #fff;
+        border: none;
+        border-radius: 0px;
+        border-bottom: solid 1px #d9d9d9
+    }
+    
+    .edit_form .card {
+        margin-top: 50px;
+        margin-left: -100px;
+        border: solid 1px rgb(104, 99, 99);
+    }
+    
+    .edit_form label {
+        color: rgb(158, 154, 154);
+    }
+    
+    .edit_form .card-header {
+        color: rgb(109, 107, 107);
+    }
