@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    {{ "Home" }}
+{% endblock %}
+{% block links %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+{% endblock %}
+{% block container %}
+
+<div class="card">
+    <div class="card-header">
+      All projects
+    </div>
+    <div class="card-body">
+      <p class="card-text">Show, update or delete all Projects.</p>
+    </div>
+  {% if msg != None %}
+    <div class="alert alert-{{alert}}" role="alert">
+      {{msg}}
+    </div>
+  {% endif %}
+  <div class="container">
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Target</th>
+          <th scope="col">Current</th>
+          <th scope="col">Start date</th>
+          <th scope="col">End date</th>
+          <th scope="col">Created at</th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for project in projects %}
+          <tr>
+              <th scope="row">{{project.title}}</th>
+              <td>{{project.target}}</td>
+              <td>{{project.current}}</td>
+              <td>{{project.start_date}}</td>
+              <td>{{project.end_date}}</td>
+              <td>{{project.created_at}}</td>
+              <td><button type="button" onclick="showMore(`{{project.title}}`,`{{project.details}}`,`{{project.current}}`,`{{project.target}}`,`{{project.end_date}}`,`{{project.user.first_name}}`)" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal">
+                Details
+              </button></td>
+              <td><a href="/admin/projects/{{project.id}}" class="btn btn-danger">Delete</a></td>
+          </tr>
+        {% empty %}
+            <div class="alert alert-warning" role="alert">
+                No projects available!
+            </div>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="jumbotron">
+        <h1 class="display-4"></h1>
+        <h3>By: <span id="creator"></span></h3>
+        <hr class="my-4">
+        <p class="lead"></p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Current: <span class="badge badge-warning" id="current"></span></th>
+              <th scope="col">Target: <span class="badge badge-success" id="target"></span></th>
+            </tr>
+          </thead>
+        </table>
+        <p>End date: <span id="end-date"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+    <script>
+      function showMore(title, details, current, target, endDate, user)
+      {
+        const header = document.getElementsByClassName('display-4')[0];
+        const detailsSection = document.getElementsByClassName('lead')[0];
+        const creator = document.getElementById('creator');
+        const currentSection = document.getElementById('current');
+        const targetSection = document.getElementById('target');
+        const endDateSection = document.getElementById('end-date');
+
+        header.innerHTML = title;
+        detailsSection.innerHTML = details;
+        creator.innerHTML = user;
+        currentSection.innerHTML = current;
+        targetSection.innerHTML = target;
+        endDateSection.innerHTML = endDate;
+      }
+    </script>
+{% endblock %}
