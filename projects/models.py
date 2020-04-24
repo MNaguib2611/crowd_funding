@@ -17,7 +17,7 @@ class Project (models.Model):
 
     title    = models.CharField(max_length=255)
     details  = models.TextField(max_length=500,null=True)
-    user     = models.ForeignKey(User, on_delete=models.CASCADE)
+    user     = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL,null=True)
     target   = models.IntegerField()
     current  = models.IntegerField()
