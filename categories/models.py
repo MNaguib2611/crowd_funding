@@ -7,4 +7,4 @@ class Category (models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "%s" % (self.name)
+        return "%s" % (self.name.capitalize())
