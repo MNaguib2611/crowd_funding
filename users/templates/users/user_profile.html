@@ -109,7 +109,7 @@
             <div class="col-3">
                 <div class="card operationCard">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item operationCardItem"><a href="#">view projects</a></li>
+                        <li class="list-group-item operationCardItem"><a href="{% url 'user_projects_url' user.id %}">view projects</a></li>
                         <li class="list-group-item operationCardItem"><a href="{% url 'user_donations_url' user.id %}">view donations</a></li>
                         <li class="list-group-item deleteBtn" data-toggle="modal" data-target="#deleteAccount">delete account</li>
                     </ul>
