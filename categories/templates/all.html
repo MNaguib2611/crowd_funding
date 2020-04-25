@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    {{ "Home" }}
+{% endblock %}
+{% block links %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+{% endblock %}
+{% block container %}
+
+<div class="card">
+    <div class="card-header">
+      Categories
+    </div>
+    <div class="card-body">
+      <p class="card-text">Show, update or delete all Categories.</p>
+      <button type="button" onclick="showmodal()" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
+        Add new category
+      </button>
+    </div>
+  {% if msg != None %}
+    <div class="alert alert-{{alert}}" role="alert">
+      {{msg}}
+    </div>
+  {% endif %}
+  <div class="container">
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Created at</th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for category in categories %}
+          <tr>
+              <th scope="row" id="{{category.name}}">{{category.name}}</th>
+              <td>{{category.created_at}}</td>
+              <td><button type="button" onclick="editCategory(`{{category.id}}`, `{{category.name}}`)" class="btn btn-warning" data-toggle="modal" data-target="#exampleModal">
+                Edit
+              </button></td>
+              <td><a href="/admin/category/{{category.id}}" class="btn btn-danger">Delete</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add new category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="categoryForm" method="POST" action="/admin/category/">
+        {% csrf_token %}
+        <div class="modal-body">
+            <div class="form-group">
+              <label for="InputName1">Name</label>
+              <input type="text" class="form-control" id="InputName1" name="name" aria-describedby="categoryName" placeholder="Enter new category name...">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+    <script>
+      function editCategory(id, name){
+        let catName = document.getElementById('InputName1');
+        catName.value = name;
+
+        let form = document.getElementById('categoryForm');
+        form.setAttribute('action', `/admin/category/${id}`);
+      }
+    </script>
+{% endblock %}

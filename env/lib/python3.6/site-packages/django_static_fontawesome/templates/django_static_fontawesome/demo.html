@@ -1,0 +1,52 @@
+<html>{% load staticfiles %}
+    <head>
+        <title>frontawesome demo</title>
+        <link rel="stylesheet" type="text/css" href="{% static "fontawesome/css/all.css" %}">
+        <style>
+            span{
+                display: inline-block;
+                min-width: 400px;
+                padding: 10px 0;
+            }
+            i{
+                margin-right: 10px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <h1 id="brands">Brands ({{brands|length}})</h1>
+        <ul>
+            <li><a href="#brands">Brands ({{brands|length}})</a></li>
+            <li><a href="#regulars">Regular ({{regulars|length}})</a></li>
+            <li><a href="#solids">Solid ({{solids|length}})</a></li>
+        </ul>
+        <hr />
+        {% for icon in brands %}
+        <span><i class="fab {{icon}}"></i>fab {{icon}}</span>
+        {% endfor %}
+
+        <h1 id="regulars">Regular ({{regulars|length}})</h1>
+        <ul>
+            <li><a href="#brands">Brands ({{brands|length}})</a></li>
+            <li><a href="#regulars">Regular ({{regulars|length}})</a></li>
+            <li><a href="#solids">Solid ({{solids|length}})</a></li>
+        </ul>
+        <hr />
+        {% for icon in regulars %}
+        <span><i class="far {{icon}}"></i>far {{icon}}</span>
+        {% endfor %}
+
+        <h1 id="solids">Solid ({{solids|length}})</h1>
+        <ul>
+            <li><a href="#brands">Brands ({{brands|length}})</a></li>
+            <li><a href="#regulars">Regular ({{regulars|length}})</a></li>
+            <li><a href="#solids">Solid ({{solids|length}})</a></li>
+        </ul>
+        <hr />
+        {% for icon in solids %}
+        <span><i class="fas {{icon}}"></i>fas {{icon}}</span>
+        {% endfor %}
+
+    </body>
+</html>
