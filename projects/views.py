@@ -3,6 +3,8 @@ from django.db.models import Avg
 from utils.utils import project_is_reported ,comment_is_reported
 from .models import Project, Report, Picture, Tag, Donation,Rate,Comment
 from categories.models import Category
+from users.models import CustomUser
+
 import math
 import json
 import time
@@ -25,6 +27,8 @@ def index(req):
     return render(req, 'projects/index.html', context)
 
 def launch_project(request):
+    user_id=1 #will be replaced by logged user
+
     if request.method.lower() == "get":
         categories= Category.objects.filter()
         context={"categories":categories} 
@@ -57,13 +61,15 @@ def launch_project(request):
                         # picture=request.FILES.get('picture', None)
                         cat=Category.objects.get(pk=category)
                         print (cat)
+                        # user=User.objects.get(pk=1)
+
                         # if end_date < start_date:
                             # raise ValidationError("End date should be greater than start date.")
                         msg = 'New project added successfully'
                         alert = 'success'
                         project_instance=Project.objects.create(featured=0,end_date=end_date,start_date=start_date,
                         title=title,details=details,target=target,current=current
-                        ,category=cat
+                        ,category=cat,user_id=user_id
                         )
                         for picture in request.FILES.getlist("picture[]",None):
                             if picture is not None and picture != '':
