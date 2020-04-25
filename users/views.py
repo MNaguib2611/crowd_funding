@@ -1,6 +1,8 @@
 from django.http import HttpResponse
 from django.http import JsonResponse
 from .models import CustomUser
+from projects.models import Donation
+from projects.models import Project
 from django.core.paginator import Paginator
 from django.db.models import Q, Avg
 from django.http import JsonResponse
@@ -61,6 +63,12 @@ def delete_account(request, id):
     # if user.password == request.POST['pass']:   # will be changed and use ajax when using password to delete           
     CustomUser.objects.filter(pk=id).delete()     
     return redirect(view_user_profile, id)   # will be changed----->error here
+
+def user_donations(request, id):
+    donations = Donation.objects.filter(user_id=id)
+    projects = Project.objects.all()
+    donations_data = {'donations': donations, 'projects': projects}
+    return render(request, 'users/user_donations.html', donations_data)
 
 def home(req):
     categories = Category.objects.all()

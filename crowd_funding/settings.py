@@ -83,7 +83,7 @@ DATABASES = {
         'USER': 'root',
         # 'USER': 'basma',
         # 'PASSWORD': 'basma12345',
-        'PASSWORD': '',
+        'PASSWORD': '41195',
         #'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
         #'PORT': '3306',
         "OPTIONS": {
