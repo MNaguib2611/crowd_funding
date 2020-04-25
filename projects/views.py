@@ -25,10 +25,15 @@ def index(req):
 
 def launch_project(request):
     if request.method.lower() == "get":
-        return render(request,"projects/launch_project.html")
+        categories= Category.objects.filter()
+        context={"categories":categories} 
+        return render(request,"projects/launch_project.html",context)
     elif request.method.lower() =="post":
         title = request.POST["title"]
-        # category = request.POST["category"]
+        # category = request.FILES.get("category")
+        category = request.POST["category"]
+        print (category)
+
         details = request.POST["details"]
         target = request.POST["target"]
         current = request.POST["current"]
@@ -36,12 +41,12 @@ def launch_project(request):
         start_date = request.POST["start_date"]
         end_date = request.POST["end_date"]
         # pictures = request.FILES.getlist("picture[]",None)
-        # print uploaded_files
         # picture=request.FILES.get('picture', None)
-
+        cat=Category.objects.get(pk=category)
+        print (cat)
         project_instance=Project.objects.create(featured=0,end_date=end_date,start_date=start_date,
         title=title,details=details,target=target,current=current
-        # ,category=category
+        ,category=cat
         )
         for picture in request.FILES.getlist("picture[]",None):
             if picture is not None and picture != '':
@@ -60,9 +65,9 @@ def launch_project(request):
 
         projects= Project.objects.filter()
         categories= Category.objects.filter()
-
         context={"projects":projects,"categories":categories} 
         return render(request,"projects/launch_project.html",context)
+
 
 
 def admin_projects(request):
