@@ -5,6 +5,7 @@ from .models import Project, Report, Picture, Tag, Donation,Rate,Comment
 from categories.models import Category
 import math
 import json
+import time
 
 
 from datetime import datetime
@@ -22,64 +23,72 @@ def index(req):
         'projects':projects
     }
     return render(req, 'projects/index.html', context)
+
 def launch_project(request):
     if request.method.lower() == "get":
         categories= Category.objects.filter()
         context={"categories":categories} 
         return render(request,"projects/launch_project.html",context)
     elif request.method.lower() =="post":
-        if request.POST["end_date"] < request.POST["start_date"] or request.POST["end_date"] =='' or request.POST["start_date"]=='': 
-            msg = 'You must insert project start data proceeding end data !'
-            alert = 'danger'
-        elif(request.POST['title'] == '' or request.POST['target']=='' or request.POST['current']==''):
-            msg = 'You must insert project Data with *!'
-            alert = 'danger'
-           
-        else:
-            try:
-               
-                title = request.POST["title"]
-                # category = request.FILES.get("category")
-                category = request.POST["category"]
-                print (category)
-
-                details = request.POST["details"]
-                target = request.POST["target"]
-                current = request.POST["current"]
-                # featured = request.POST["featured"]
-                start_date = request.POST["start_date"]
-                end_date = request.POST["end_date"]
-                # pictures = request.FILES.getlist("picture[]",None)
-                # picture=request.FILES.get('picture', None)
-                cat=Category.objects.get(pk=category)
-                print (cat)
-              
-                project_instance=Project.objects.create(featured=0,end_date=end_date,start_date=start_date,
-                title=title,details=details,target=target,current=current
-                ,category=cat
-                )
-                msg = 'New project added successfully'
-                alert = 'success'
-                for picture in request.FILES.getlist("picture[]",None):
-                    if picture is not None and picture != '':
-                        picture_instance=Picture.objects.create(picture=picture,project=project_instance)
+        try:
+            if time.strptime(  request.POST["end_date"] , '%Y-%m-%d') or time.strptime(  request.POST["start_date"] , '%Y-%m-%d'):
+                if request.POST["end_date"] < request.POST["start_date"] or request.POST["end_date"] =='' or request.POST["start_date"]=='': 
+                    msg = 'You must insert project start data proceeding end data !'
+                    alert = 'danger'
+                elif(request.POST['title'] == '' or request.POST['target']=='' or request.POST['current']==''):
+                    msg = 'You must insert project Data!'
+                    alert = 'danger'
                 
-                searchForValue = ','
-                tag = request.POST["tag"]
-                if tag is not None and tag != '':
-                    if searchForValue in tag:
-                        tags=tag.split(',')
-                        for tag in tags:
-                            tag_instance=Tag.objects.create(tag=tag,project=project_instance)       
-                    else:    
-                        tag_instance=Tag.objects.create(tag=tag,project=project_instance)
-        
+                else:
+                    try:
+                    
+                        title = request.POST["title"]
+                        # category = request.FILES.get("category")
+                        category = request.POST["category"]
+                        print (category)
 
-            except IntegrityError as e:
-                msg = 'project already added!'
-                alert = 'danger'       
-      
+                        details = request.POST["details"]
+                        target = request.POST["target"]
+                        current = request.POST["current"]
+                        # featured = request.POST["featured"]
+                        start_date = request.POST["start_date"]
+                        end_date = request.POST["end_date"]
+                        # pictures = request.FILES.getlist("picture[]",None)
+                        # picture=request.FILES.get('picture', None)
+                        cat=Category.objects.get(pk=category)
+                        print (cat)
+                        # if end_date < start_date:
+                            # raise ValidationError("End date should be greater than start date.")
+                        msg = 'New project added successfully'
+                        alert = 'success'
+                        project_instance=Project.objects.create(featured=0,end_date=end_date,start_date=start_date,
+                        title=title,details=details,target=target,current=current
+                        ,category=cat
+                        )
+                        for picture in request.FILES.getlist("picture[]",None):
+                            if picture is not None and picture != '':
+                                picture_instance=Picture.objects.create(picture=picture,project=project_instance)
+                        
+                        searchForValue = ','
+                        tag = request.POST["tag"]
+                        if tag is not None and tag != '':
+                            if searchForValue in tag:
+                                tags=tag.split(',')
+                                for tag in tags:
+                                    tag_instance=Tag.objects.create(tag=tag,project=project_instance)       
+                            else:    
+                                tag_instance=Tag.objects.create(tag=tag,project=project_instance)
+                
+
+                    except IntegrityError as e:
+                        msg = 'project already added!'
+                        alert = 'danger'
+
         
+       
+        except ValueError:
+                msg='Invalild Date Format'
+                alert='danger' 
         projects= Project.objects.filter()
         categories= Category.objects.filter()
         context={"projects":projects,"categories":categories,"msg": msg, "alert": alert,
@@ -89,9 +98,7 @@ def launch_project(request):
         # 'target': request.POST.get ('target', ''),
         # 'current': request.POST.get ('current', '')
         } 
-        return render(request,"projects/launch_project.html",context)
-
-
+        return render(request,"projects/launch_project.html",context) 
 
 
 def admin_projects(request):
