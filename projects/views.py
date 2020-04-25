@@ -22,51 +22,75 @@ def index(req):
         'projects':projects
     }
     return render(req, 'projects/index.html', context)
-
 def launch_project(request):
     if request.method.lower() == "get":
         categories= Category.objects.filter()
         context={"categories":categories} 
         return render(request,"projects/launch_project.html",context)
     elif request.method.lower() =="post":
-        title = request.POST["title"]
-        # category = request.FILES.get("category")
-        category = request.POST["category"]
-        print (category)
+        if request.POST["end_date"] < request.POST["start_date"] or request.POST["end_date"] =='' or request.POST["start_date"]=='': 
+            msg = 'You must insert project start data proceeding end data !'
+            alert = 'danger'
+        elif(request.POST['title'] == '' or request.POST['target']=='' or request.POST['current']==''):
+            msg = 'You must insert project Data with *!'
+            alert = 'danger'
+           
+        else:
+            try:
+               
+                title = request.POST["title"]
+                # category = request.FILES.get("category")
+                category = request.POST["category"]
+                print (category)
 
-        details = request.POST["details"]
-        target = request.POST["target"]
-        current = request.POST["current"]
-        # featured = request.POST["featured"]
-        start_date = request.POST["start_date"]
-        end_date = request.POST["end_date"]
-        # pictures = request.FILES.getlist("picture[]",None)
-        # picture=request.FILES.get('picture', None)
-        cat=Category.objects.get(pk=category)
-        print (cat)
-        project_instance=Project.objects.create(featured=0,end_date=end_date,start_date=start_date,
-        title=title,details=details,target=target,current=current
-        ,category=cat
-        )
-        for picture in request.FILES.getlist("picture[]",None):
-            if picture is not None and picture != '':
-                picture_instance=Picture.objects.create(picture=picture,project=project_instance)
-        
-        searchForValue = ','
-        tag = request.POST["tag"]
-        if tag is not None and tag != '':
-            if searchForValue in tag:
-                tags=tag.split(',')
-                for tag in tags:
-                    tag_instance=Tag.objects.create(tag=tag,project=project_instance)       
-            else:    
-                tag_instance=Tag.objects.create(tag=tag,project=project_instance)
+                details = request.POST["details"]
+                target = request.POST["target"]
+                current = request.POST["current"]
+                # featured = request.POST["featured"]
+                start_date = request.POST["start_date"]
+                end_date = request.POST["end_date"]
+                # pictures = request.FILES.getlist("picture[]",None)
+                # picture=request.FILES.get('picture', None)
+                cat=Category.objects.get(pk=category)
+                print (cat)
+              
+                project_instance=Project.objects.create(featured=0,end_date=end_date,start_date=start_date,
+                title=title,details=details,target=target,current=current
+                ,category=cat
+                )
+                msg = 'New project added successfully'
+                alert = 'success'
+                for picture in request.FILES.getlist("picture[]",None):
+                    if picture is not None and picture != '':
+                        picture_instance=Picture.objects.create(picture=picture,project=project_instance)
+                
+                searchForValue = ','
+                tag = request.POST["tag"]
+                if tag is not None and tag != '':
+                    if searchForValue in tag:
+                        tags=tag.split(',')
+                        for tag in tags:
+                            tag_instance=Tag.objects.create(tag=tag,project=project_instance)       
+                    else:    
+                        tag_instance=Tag.objects.create(tag=tag,project=project_instance)
         
 
+            except IntegrityError as e:
+                msg = 'project already added!'
+                alert = 'danger'       
+      
+        
         projects= Project.objects.filter()
         categories= Category.objects.filter()
-        context={"projects":projects,"categories":categories} 
+        context={"projects":projects,"categories":categories,"msg": msg, "alert": alert,
+        # 'formset': formset,
+        # 'title': request.POST.get ('title', ''),
+        # 'details': request.POST.get ('details', ''),
+        # 'target': request.POST.get ('target', ''),
+        # 'current': request.POST.get ('current', '')
+        } 
         return render(request,"projects/launch_project.html",context)
+
 
 
 

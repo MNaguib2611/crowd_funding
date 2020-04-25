@@ -1,5 +1,11 @@
-{% load countries %}
-{% get_countries as countries %}
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    {{ "Launch Project" }}
+{% endblock %}
+{% block links %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+{% endblock %}
 <style>
     body {
         padding: 20px;
@@ -9,12 +15,20 @@
         display: block;
     }
 </style>
-{% block body %}
+{% block container %}
+
 
 <div>
 
 <form action="#" method="post" enctype="multipart/form-data">
     {% csrf_token %}
+   <h3> Launch Project</h3>
+    {{ formset.management_form }}
+    {% if msg != None %}
+    <div class="alert alert-{{alert}}" role="alert">
+      {{msg}}
+    </div>
+    {% endif %}
     <div class="field">
         <label for="title">Project Title *</label>
         <input type="text" value="" id="title" name="title" required  placeholder="Title" />
@@ -63,7 +77,7 @@
         <input type="number" value="" name="target" placeholder="Total target 100000 dollars" min="10000" step="100" max="1000000000000" required />
     </div>
     <div class="field">
-        <label>Project current donation</label>
+        <label>Project current donation*</label>
         <input type="number" value="" name="current" placeholder="Total current 100000 dollars" min="0" step="100" />
     </div>
     <div class="field">
