@@ -77,6 +77,11 @@ def user_projects(request, id):
     projects_data = {'categories': categories, 'projects': projects}
     return render(request, 'users/user_projects.html', projects_data)
 
+def delete_project(request, id, project_id):
+    Project.objects.filter(pk=project_id).delete()
+    return redirect(user_projects, id)
+    
+
 def home(req):
     categories = Category.objects.all()
 

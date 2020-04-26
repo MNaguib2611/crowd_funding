@@ -1,10 +1,11 @@
 from django.urls import path
 # from .views import view_user_profile, edit_name
-from users.views import view_user_profile, edit_name, edit_birthdate, edit_country, edit_password, edit_phone, edit_fb_page, edit_photo, delete_account, user_donations,user_projects
+from users.views import view_user_profile, edit_name, edit_birthdate, edit_country, edit_password, edit_phone, edit_fb_page, edit_photo, delete_account, user_donations,user_projects,delete_project
 
 from users.views import home,donate, report_comment,report_project, search 
 
 urlpatterns = [
+    path('delete_project/<int:id> <int:project_id>', delete_project, name="delete_project_url"),
     path('<int:id>', view_user_profile),
     path('edit_photo/<int:id>', edit_photo, name="edit_photo_url"),
     path('edit_name/<int:id>', edit_name, name="edit_name_url"),
@@ -18,7 +19,7 @@ urlpatterns = [
     path('projects/<int:id>', user_projects, name="user_projects_url"),
     path('home', home,name="home"),
     path('donate', donate,name="donate"),
-    path('report_comment/<int:project_id>/<int:comment_id>', report_comment,name="report_comment"),
+    path('report_comment/<int:project_id> <int:comment_id>', report_comment,name="report_comment"),
     path('report_project/<int:id>', report_project,name="report_project"),
     path('search', search,name="search"),
 ]
