@@ -112,6 +112,22 @@ def admin_projects(request):
 
     return render(request, 'projects/admin/all.html', {'projects':projects})
 
+def admin_reported_projects(request):
+ 
+    projects=[]
+    reported_projects = Report.objects.all()   
+    for reported_project in reported_projects:
+        projects += Project.objects.all().filter(id=reported_project.project_id)
+
+    context = {'projects':projects}
+    return render(request, 'projects/admin/reported_projects.html', context )
+    
+def admin_delete_reported_projects(request, id):
+    project = Project.objects.get(pk=id)
+    project.delete()
+
+    return redirect('/admin/projects/reported_project')
+
 def admin_delete_projects(request, id):
     project = Project.objects.get(pk=id)
     project.delete()
