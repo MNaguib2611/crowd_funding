@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.http import JsonResponse
 from utils.utils import project_is_reported
 from .models import Project, Report,Picture,Tag
 from categories.models import Category
 
 # import os
 # from flask import Flask, flash, request, redirect, url_for
-from flask import Flask
+# from flask import Flask
 # from app.forms import Image/
 
 # from werkzeug.utils import secure_filename
@@ -74,3 +75,15 @@ def admin_delete_projects(request, id):
     project.delete()
 
     return redirect('/admin/projects/')
+
+def project_featured(request, id):
+    project = Project.objects.get(pk=id)
+    if(project.featured == 1):
+        project.featured = 0;
+    else:
+        project.featured = 1;
+    
+    
+    project.save()
+
+    return JsonResponse({'status':200})

@@ -79,18 +79,16 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'crowd_funding',
-        # 'USER': 'root',
-        'USER': 'basma',
-        'PASSWORD': 'basma12345',
+        'USER': 'root',
         # 'PASSWORD': 'ITIintake40',
         # 'PASSWORD': '41195',
-        # 'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
+        'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
         # 'PORT': '3306',
         "OPTIONS": {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 
             # "unix_socket": "/tmp/mysql-dev.sock",
-            # 'unix_socket': '/opt/lampp/var/mysql/mysql.sock',
+            'unix_socket': '/opt/lampp/var/mysql/mysql.sock',
         }
     }
 }
