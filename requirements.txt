@@ -1,7 +1,10 @@
+bootstrap4==0.1.0
 Django==2.1
 django-braces==1.14.0
 django-countries==6.1.2
+django-mathfilters==1.0.0
 django-model-utils==4.0.0
+django-static-fontawesome==5.12.1.4
 mysqlclient==1.4.6
 pytz==2019.3
 six==1.14.0

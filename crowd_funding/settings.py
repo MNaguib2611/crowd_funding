@@ -82,11 +82,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'crowd_funding',
         'USER': 'root',
-        # 'USER': 'basma',
-        # 'PASSWORD': 'basma12345',
-        'PASSWORD': '41195',
-        #'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
-        #'PORT': '3306',
+        # 'PASSWORD': 'ITIintake40',
+        # 'PASSWORD': '41195',
+        'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
+        # 'PORT': '3306',
         "OPTIONS": {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 

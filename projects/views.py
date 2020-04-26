@@ -1,21 +1,16 @@
-from django.shortcuts import render,redirect
-from django.db.models import Avg
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from utils.utils import project_is_reported ,comment_is_reported
-from .models import Project, Report, Picture, Tag, Donation,Rate,Comment
+from .models import Project, Report,Picture,Tag, Donation,Rate,Comment
+from django.db.models import Avg
 from categories.models import Category
+from users.models import CustomUser
+from datetime import datetime
+from django.http import HttpResponse
+
 import math
 import json
 import time
-
-
-from datetime import datetime
-from django.http import HttpResponse
-# import os
-# from app.forms import Image/
-
-# from werkzeug.utils import secure_filename
-
-# @app.route("projects/launch_project.html", methods=["POST"])
 
 def index(req):
     projects = project_is_reported(Project.objects.all())
@@ -25,6 +20,8 @@ def index(req):
     return render(req, 'projects/index.html', context)
 
 def launch_project(request):
+    user_id=1 #will be replaced by logged user
+
     if request.method.lower() == "get":
         categories= Category.objects.filter()
         context={"categories":categories} 
@@ -57,13 +54,15 @@ def launch_project(request):
                         # picture=request.FILES.get('picture', None)
                         cat=Category.objects.get(pk=category)
                         print (cat)
+                        # user=User.objects.get(pk=1)
+
                         # if end_date < start_date:
                             # raise ValidationError("End date should be greater than start date.")
                         msg = 'New project added successfully'
                         alert = 'success'
                         project_instance=Project.objects.create(featured=0,end_date=end_date,start_date=start_date,
                         title=title,details=details,target=target,current=current
-                        ,category=cat
+                        ,category=cat,user_id=user_id
                         )
                         for picture in request.FILES.getlist("picture[]",None):
                             if picture is not None and picture != '':
@@ -106,11 +105,38 @@ def admin_projects(request):
 
     return render(request, 'projects/admin/all.html', {'projects':projects})
 
+def admin_reported_projects(request):
+ 
+    projects=[]
+    reported_projects = Report.objects.all()   
+    for reported_project in reported_projects:
+        projects += Project.objects.all().filter(id=reported_project.project_id)
+
+    context = {'projects':projects}
+    return render(request, 'projects/admin/reported_projects.html', context )
+    
+def admin_delete_reported_projects(request, id):
+    project = Project.objects.get(pk=id)
+    project.delete()
+
+    return redirect('/admin/projects/reported_project')
+
 def admin_delete_projects(request, id):
     project = Project.objects.get(pk=id)
     project.delete()
     return redirect('/admin/projects/')
 
+def project_featured(request, id):
+    project = Project.objects.get(pk=id)
+    if(project.featured == 1):
+        project.featured = 0
+    else:
+        project.featured = 1
+    
+    
+    project.save()
+
+    return JsonResponse({'status':200})
 
 def show(req,project_id):
     user_id=1 #will be replaced by logged user
