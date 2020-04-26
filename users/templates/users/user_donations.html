@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block container %}
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-xs-12">
+                <h2>All Donations</h2>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-9">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">PROJECT</th>
+                            <th scope="col">AMOUNT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for donation in donations %}
+                            <tr>
+                                {% for project in projects %}
+                                    {% if project.id == donation.project_id %}
+                                        <td>{{ project.title }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                                <td>{{ donation.amount }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

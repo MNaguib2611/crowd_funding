@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% block title %}
+{{project.title}}
+{% endblock %}
+{% block links %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/show.css' %}">
+{% endblock %}
+{% block container %}
+
+
+
+
+<div class="pt-1 pb-1">
+    <h2>{{project.title.capitalize}} <small></small>
+        {% if not reported %}
+        <a href="{% url 'report_project' project.id %} ">
+            <button {% if project.is_reported %} {{ "disabled" }} {% endif %} class="btn btn-danger btn-sm float-right"
+                title="report">
+                <i class="fa fa-ban h-100 w-100" aria-hidden="true"></i>
+            </button>
+        </a>
+        {% else %}
+        <button class="btn btn-secondary btn-sm float-right" title="you reported this project">
+            <i class="fa fa-ban h-100 w-100" aria-hidden="true"></i>
+        </button>
+        {% endif %}
+
+    </h2>
+    <div class="col-md-12">
+        <small class="text-secondary">Start date : {{project.start_date}}</small><br>
+        <small class="text-secondary">End date : {{project.end_date}}</small>
+        <span title="Category" class="float-right" id="category">
+            {% if project.category %}
+            {{project.category}}
+            {% else %}
+            No Category
+            {% endif %}
+        </span>
+    </div>
+
+    <div col-md-12>
+        <div class="slideshow-container">
+            {% for picture in pictures %}
+            <div class="mySlides fade">
+                <div class="numbertext">1 / 3</div>
+                <img src="{{ picture }}" style="width:100%;height:350px;">
+            </div>
+            {% empty %}
+            <div class="mySlides fade">
+                <div class="numbertext">1 / 3</div>
+                <img src="https://miro.medium.com/max/4968/1*U3OmlRZJ_g6Zs5IEb48_hw.jpeg" style="width:100%;height:350px;">
+            </div>
+            <div class="mySlides fade">
+                <div class="numbertext">1 / 3</div>
+                <img src="https://miro.medium.com/max/4968/1*U3OmlRZJ_g6Zs5IEb48_hw.jpeg" style="width:100%;height:350px;">
+            </div>
+            {% endfor %}
+
+
+        </div>
+        <br>
+        <!-- The dots/circles -->
+        <div style="text-align:center">
+            {% for picture in pictures %}
+            <span class="dot"></span>
+            {% endfor %}
+        </div>
+
+    </div>
+    </a>
+
+    <br>
+    <div class="row">
+        <div class="col-md-8">
+
+            <p class="description">
+                <i>Description :
+                    <span title="Rate: {{rating}} / 5">
+                        {% if rating_f > 4 %}
+                        <span class="float-right"><i class="text-warning fa fa-star-half-o"></i></span>
+                        {% endif %}
+                        {% for number in rating_i %}
+                        <span class="float-right"><i class="text-warning fa fa-star"></i></span>
+                        {% endfor %}
+                    </span>
+                    
+                    <br> {{ project.details }}</i> <br>
+                    <small class="text-secondary"> by: <a href="/{{project.user.id}}">{{project.user}}</a> </small>
+                    
+                    <button id="donate" class="btn btn-info btn-lg float-right" data-toggle="modal" data-title="{{ project.title }}"
+                    data-project_id="{{ project.id }}" data-target-donation="{{ project.target }}"
+                    data-current-donation="{{ project.current }}" data-target="#donate-model"
+                    {% if project.target == project.current %} {{ "disabled" }} {{"title='target has been reached'"}} {% endif %}
+                    {% if time %} {{ "disabled" }} {{"title='passed end date'"}}  {% endif %}
+                    >Donate
+                </button>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h3 class="text-primary">Target:{{project.target}}$</h3>
+            <br>
+            <div class="container-target">
+                <div id="target">0%</div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<br>
+<hr><br>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-9">
+                <form method="post" action="{% url 'comment_url' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="project_id" id="project_id_hidden" value="{{project.id}}">
+                    <textarea name="comment" id="comment-area" class="w-100" rows="3"></textarea>
+                    <input type="submit" value="comment" class="btn btn-lg btn-success float-right">
+                </form>
+            </div>
+            <div class="rate col-md-3" title="{{ user_rate_val }}" id="you_rated">
+                <input type="radio" id="star5" name="rating" value="5" />
+                <label for="star5">5 stars</label>
+                <input type="radio" id="star4" name="rating" value="4" />
+                <label for="star4">4 stars</label>
+                <input type="radio" id="star3" name="rating" value="3" />
+                <label for="star3">3 stars</label>
+                <input type="radio" id="star2" name="rating" value="2" />
+                <label for="star2">2 stars</label>
+                <input type="radio" id="star1" name="rating" value="1" />
+                <label for="star1">1 star</label>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+
+// target stuff
+let target = "{{ project.target }}";
+let current ="{{ project.current }}"
+let percent_width =parseInt(eval(current/target)*100);
+$("#target").css("width", `${percent_width}%`);
+$(".container-target").prop("title", `${current}$ out of ${target}$`);
+$("#target").html(`${percent_width}%`)
+
+// rating stuff
+    let user_rate = "{{ user_rate_val }}"
+    let user_rate_val = user_rate[user_rate.length - 1];
+    $(`#star${user_rate_val}`).prop("checked", true);
+    let proj_id = $("#project_id_hidden").val();
+    $("input[name='rating']").change(function () {
+        window.location.href = `http://localhost:8000/projects/${proj_id}/rate?rate_val=${$(this).val()}`;
+    });
+</script>
+
+
+<br>
+<hr><br>
+{% for comment in comments %}
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">
+                <img src="{{comment.user.picture}}" class="img img-rounded img-fluid" />
+                <p class="text-secondary text-center">{{comment.created_at}}</p>
+            </div>
+            <div class="col-md-10">
+                <p>
+                    <a class="float-left"
+                        href="https://maniruzzaman-akash.blogspot.com/p/contact.html"><strong>{{comment.user}}</strong></a>
+                </p>
+                <div class="clearfix"></div>
+                <p>{{comment}}</p>
+                {% if comment.is_reported %}
+                <button disabled class="btn btn-secondary btn-sm float-right" title="you have reported this comment">
+                    <i class="fa fa-ban h-100 w-100" aria-hidden="true"></i>
+                </button>
+                {% else %}
+                <a href="{% url 'report_comment' project.id  comment.id%} ">
+                    <button class="btn btn-danger btn-sm float-right" title="report">
+                        <i class="fa fa-ban h-100 w-100" aria-hidden="true"></i>
+                    </button>
+                </a>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% empty %}
+<h3>No Comments Yet</h3>
+{% endfor %}
+
+
+
+<br><br>
+<h2>See similar projects</h2>
+<div class="row pt-3" >
+    {% for project in projects %}
+
+    <div class="card-proj">
+        {% if project.picture_set.first%}
+            <img src="{{ project.picture_set.first }}" alt="Avatar" style="width:100%;height: 100px;">
+        {% else %}
+            <img src="https://miro.medium.com/max/4968/1*U3OmlRZJ_g6Zs5IEb48_hw.jpeg" alt="Avatar" style="width:100%;height: 100px;">
+        {%endif%}
+        <div class="container-proj">
+          <h4><b>{{ project.title }}</b></h4>
+          <p><a href="{{ project.id }}" class="btn btn-primary btn-sm">More Details</a></p>
+        </div>
+    </div> 
+{% empty %}
+<h3>No Related Projects Found</h3>
+{% endfor %}
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal fade" id="donate-model" tabindex="-1" role="dialog" aria-labelledby="donateModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header mt-3 d-flex flex-row align-self-start">
+                <button type="button" class="close mr-1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="donateModalLabel"></h4>
+            </div>
+            <form method="post" action="{% url 'donate' %}">
+                {% csrf_token %}
+                <input name="project_id" id="project_id" hidden value="{{project.id}}" />
+                <div class="modal-body">
+                    <p>
+                        Please confirm you would like to donate to
+                        <b><span id="project-title"></span></b>
+                        with <input id="donation-val" name="donation-val" type="number" class="w-25 d-inline" min="1"
+                            max="" value="1" /> $
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                    </button>
+                    <span class="pull-right">
+                        <button type="submit" class="btn btn-success">
+                            Donate
+                        </button>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+{% block scripts %}
+<script src="{% static 'js/show.js' %}"></script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
