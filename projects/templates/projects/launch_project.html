@@ -1,5 +1,11 @@
-{% load countries %}
-{% get_countries as countries %}
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+{{ "Launch Project" }}
+{% endblock %}
+{% block links %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+{% endblock %}
 <style>
     body {
         padding: 20px;
@@ -8,74 +14,142 @@
     .dropdown-menu label {
         display: block;
     }
+    body input{
+        width:100%;
+    }
 </style>
-{% block body %}
+{% block container %}
 
-<div>
 
-<form action="#" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="field">
-        <label for="title">Project Title *</label>
-        <input type="text" value="" id="title" name="title" required  placeholder="Title" />
+
+<div class="card">
+    <div class="card-header">
+        Launch Project
     </div>
-    <div class="field">
-        <label for="ccat">Project Category *</label>
-       
-        <div class="field-select">
-            <select id="ccat">
-                {% for category in categories %}
-                <option  name="category" value="{{ category.id }}">{{ category.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-    <div class="field">
-        <label for="campaigndesc">Project Details</label>
-        <textarea type="text" rows="4" id="campaigndesc" name="details" placeholder="Enter Details"></textarea>
-    </div>
-    <div class="field">
-        <label for="uploadfile">Project Image </label>
-        <!-- <div class="list-upload"> -->
-          
-            <!-- <div class="file-upload"> -->
-                <!-- <div class="upload-bg"> -->
-                    <!-- <div id="myfileupload1"> -->
-                        <input type="file" name="picture[]" multiple="">
-                        <!-- <input type="file" id="uploadfile1" accept="image/jpeg, image/png, , image/jpg"
+    <div class="container">
+
+        <form action="#" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            {% if msg != None %}
+            <div class="alert alert-{{alert}}" role="alert">
+                {{msg}}
+            </div>
+            {% endif %}
+            <table class="table">
+               
+                <tbody>
+                    <tr>
+                        <th scope="row">Project Title *</th>
+                        <!-- <div class="field"> -->
+                        <!-- <label for="title">Project Title *</label> -->
+                        <td> <input type="text" value="" id="title" name="title" required placeholder="Title" style='width: 500px; '/>
+                        </td>
+                    </tr>
+                    <!-- </div> -->
+                    <!-- <div class="field"> -->
+                    <!-- <label for="ccat">Project Category *</label> -->
+                    <tr>
+                        <th scope="row">Project Category *</th>
+                        <!-- <div class="field-select"> -->
+                        <td><select id="ccat" name="category" style='width: 500px; '>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}" style='width: 500px; '>{{ category.name }}</option>
+                                {% endfor %}
+                            </select></td>
+                    </tr>
+                    <!-- </div> -->
+                    <!-- </div> -->
+                    <!-- <div class="field"> -->
+                    <!-- <label for="campaigndesc">Project Details</label> -->
+                    <tr>
+                        <th scope="row">Project Details</th>
+
+                        <td><textarea type="text" rows="4" id="campaigndesc" name="details"
+                                placeholder="Enter Details" style='width: 500px; '></textarea></td>
+                    </tr>
+                    <!-- </div> -->
+                    <!-- <div class="field"> -->
+                    <tr>
+                        <th scope="row">Project Image </th>
+                        <!-- <label for="uploadfile">Project Image </label> -->
+                        <!-- <div class="list-upload"> -->
+
+                        <!-- <div class="file-upload"> -->
+                        <!-- <div class="upload-bg"> -->
+                        <!-- <div id="myfileupload1"> -->
+                        <td>
+                            <input type="file" name="picture[]" multiple="" style='width: 500px; '></td>
+                    </tr>
+                    <!-- <input type="file" id="uploadfile1" accept="image/jpeg, image/png, , image/jpg"
                             name="picture" onchange="readURL1(this);" /> -->
                     <!-- </div> -->
-                   
-                
-                <!-- </div> -->
-            <!-- </div> -->
-        
-        <!-- </div> -->
-    </div>
 
-    <div class="field">
-        <label for="ccat">Project Tags </label>
-        <input type="text" value="" id="tag" name="tag" placeholder="Add Tags separated by comma" />
-    </div>
 
-    <div class="field">
-        <label for="cduration">Project Total target *</label>
-        <input type="number" value="" name="target" placeholder="Total target 100000 dollars" min="10000" step="100" max="1000000000000" required />
+                    <!-- </div> -->
+                    <!-- </div> -->
+
+                    <!-- </div> -->
+                    <!-- </div> -->
+
+                    <!-- <div class="field"> -->
+                    <tr>
+                        <th scope="row">Project Tags</th>
+
+                        <!-- <label for="ccat">Project Tags </label> -->
+                        <td><input type="text" value="" id="tag" name="tag" placeholder="Add Tags separated by comma" style='width: 500px; '/>
+                        </td>
+                    </tr>
+                    <!-- </div> -->
+
+                    <!-- <div class="field"> -->
+                    <!-- <label for="cduration">Project Total target *</label> -->
+                    <tr>
+                        <th scope="row">Project Total target *</th>
+
+                        <td> <input type="number" value="" name="target" placeholder="Total target 100000 dollars"
+                                min="10000" step="100" max="1000000000" required style='width: 500px; '/>
+                        </td>
+                    </tr>
+                    <!-- </div> -->
+                    <!-- <div class="field"> -->
+                    <!-- <label>Project current donation*</label> -->
+                    <tr>
+                        <th scope="row">Project current donation*</th>
+
+                        <td> <input type="number" value="" name="current" placeholder="Total current 100000 dollars"
+                                min="0" step="100" required style='width: 500px; '/></td>
+                    </tr>
+                    <!-- </div> -->
+                    <!-- <div class="field"> -->
+                    <!-- <label>Project start_date *</label> -->
+                    <tr>
+                        <th scope="row">Project start_date *</th>
+
+                        <td><input type="text" value="" name="start_date" placeholder="start_date YYYY-MM-DD"
+                                required style='width: 500px; '/>
+                        </td>
+                    </tr>
+                    <!-- </div> -->
+                    <!-- <div class="field"> -->
+                    <!-- <label>Project end_date *</label> -->
+                    <tr>
+                        <th scope="row">Project end_date *</th>
+
+                        <td><input type="text" value="" name="end_date" placeholder=" end_date YYYY-MM-DD" required style='width: 500px; '/>
+                        </td>
+                    </tr>
+                    <!-- </div> -->
+
+                    <tr>
+                        <td><button type="submit" value="Save & Launch" class="btn btn-primary">Save &amp; Launch</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+
+
     </div>
-    <div class="field">
-        <label>Project current donation</label>
-        <input type="number" value="" name="current" placeholder="Total current 100000 dollars" min="0" step="100" />
-    </div>
-    <div class="field">
-        <label>Project start_date *</label>
-        <input type="text" value="" name="start_date" placeholder="start_date YYYY-MM-DD" required  />
-    </div>
-    <div class="field">
-        <label>Project end_date *</label>
-        <input type="text" value="" name="end_date" placeholder=" end_date YYYY-MM-DD" required />
-    </div>
-   
-    <button type="submit" value="Save & Launch" class="btn-primary">Save &amp; Launch</button>
-</form>
-<div>
-{% endblock %}
+    <div>
+        {% endblock %}

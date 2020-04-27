@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "django_static_fontawesome",
     'bootstrap4',
-    'django.contrib.humanize',
+    'mathfilters',
+      'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -82,11 +83,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'crowd_funding',
         'USER': 'root',
-        # 'USER': 'basma',
-        # 'PASSWORD': 'basma12345',
+        # 'PASSWORD': 'ITIintake40',
         'PASSWORD': '',
-        # 'PASSWORD': '41195',
-        # 'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
+        'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
         # 'PORT': '3306',
         "OPTIONS": {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
