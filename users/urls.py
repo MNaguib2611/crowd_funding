@@ -6,7 +6,7 @@ from users.views import home,donate, report_comment,report_project, search
 
 urlpatterns = [
     path('delete_project/<int:id> <int:project_id>', delete_project, name="delete_project_url"),
-    path('<int:id>', view_user_profile),
+    path('<int:id>', view_user_profile,name='view_user_profile'),
     path('edit_photo/<int:id>', edit_photo, name="edit_photo_url"),
     path('edit_name/<int:id>', edit_name, name="edit_name_url"),
     path('edit_birthdate/<int:id>', edit_birthdate, name="edit_birthdate_url"),

@@ -1,3 +1,4 @@
+console.log("AAAAAAA")
 ! function (e) {
   var t = {};
 
@@ -17863,12 +17864,12 @@
           var t = this,
             i = n(this._element).hasClass(Q.FADE) ? Q.FADE : "";
           if (this._isShown && this._config.backdrop) {
-            if (this._backdrop = document.createElement("div"), this._backdrop.className = Q.BACKDROP, i && this._backdrop.classList.add(i), n(this._backdrop).appendTo(document.body), n(this._element).on(K.CLICK_DISMISS, function (e) {
+         /*   if (this._backdrop = document.createElement("div"), this._backdrop.className = Q.BACKDROP, i && this._backdrop.classList.add(i), n(this._backdrop).appendTo(document.body), n(this._element).on(K.CLICK_DISMISS, function (e) {
                 t._ignoreBackdropClick ? t._ignoreBackdropClick = !1 : e.target === e.currentTarget && ("static" === t._config.backdrop ? t._element.focus() : t.hide())
               }), i && d.reflow(this._backdrop), n(this._backdrop).addClass(Q.SHOW), !e) return;
             if (!i) return void e();
             var r = d.getTransitionDurationFromElement(this._backdrop);
-            n(this._backdrop).one(d.TRANSITION_END, e).emulateTransitionEnd(r)
+            n(this._backdrop).one(d.TRANSITION_END, e).emulateTransitionEnd(r)*/
           } else if (!this._isShown && this._backdrop) {
             n(this._backdrop).removeClass(Q.SHOW);
             var a = function () {
