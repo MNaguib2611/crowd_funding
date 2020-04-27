@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.db.models import Avg
 from utils.utils import project_is_reported ,comment_is_reported
-from .models import Project, Report, Picture, Tag, Donation,Rate,Comment
+from .models import Project, Report, Picture, Tag, Reply,Donation,Rate,Comment
 from categories.models import Category
 import math
 import json
@@ -126,6 +126,17 @@ def comment(req):
     new_comment.save()            
     return redirect(f"/projects/{req.POST['project_id'] }" )            
 
+def reply(req):
+    user_id=1
+    new_reply=Reply(
+                reply=req.POST['reply'],
+                comment_id=req.POST['comment_id'],
+                user_id=1
+                )
+    new_reply.save()  
+    print (new_reply.comment)
+        
+    return redirect(f"/projects/{new_reply.comment.project.id }" )   
 
 
 def rate(req,project_id):

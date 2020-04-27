@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "django_static_fontawesome",
     'bootstrap4',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
