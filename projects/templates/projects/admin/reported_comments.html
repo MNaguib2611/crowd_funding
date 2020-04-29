@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    {{ "Home" }}
+{% endblock %}
+{% block links %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+{% endblock %}
+{% block container %}
+
+<div class="card">
+    <div class="card-header">
+      All comments
+    </div>
+    <div class="card-body">
+      <p class="card-text">Show, update or delete all Projects.</p>
+    </div>
+  {% if msg != None %}
+    <div class="alert alert-{{alert}}" role="alert">
+      {{msg}}
+    </div>
+  {% endif %}
+  <div class="container">
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Comment</th>
+          <th scope="col">Project</th>
+          <th scope="col">User</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in reports %}
+          {% if report != None %}
+          <tr>
+              <th scope="row">{{report.comment.comment}}</th>
+              <td>{{report.project.title}}</td>
+              <td>{{report.user.first_name}} {{report.user.last_name}}</td>
+              <td><a href="/admin/projects/comments/{{report.id}}" class="btn btn-danger">Delete</a></td>
+          </tr>
+          {% endif %}
+        {% empty %}
+            <div class="alert alert-warning" role="alert">
+                No projects available!
+            </div>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+    <script>
+    </script>
+{% endblock %}

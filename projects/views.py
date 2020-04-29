@@ -5,6 +5,7 @@ from .models import Project, Report,Picture,Tag, Donation,Rate,Comment
 from django.db.models import Avg
 from categories.models import Category
 from users.models import CustomUser
+from projects.models import Report, Comment
 from datetime import datetime
 from django.http import HttpResponse
 
@@ -204,3 +205,16 @@ def rate(req,project_id):
         new_rate.save()
     return redirect(f"/projects/{project_id}" )  
 
+def all_reported_comments(request):
+    all_reports = Report.objects.exclude(comment_id=None)
+    reports = [all_reports.filter(comment_id=item['comment_id']).last() for item in Report.objects.values('comment_id').distinct()]
+    print(reports[0])
+    return render(request, 'projects/admin/reported_comments.html', {'reports': reports} )
+
+def delete_comment(request, id):
+    report = Report.objects.get(pk=id)
+    comment = Comment.objects.get(pk=report.comment_id)
+    comment.delete()
+    report.delete()
+
+    return redirect('/admin/projects/comments/reported/')
