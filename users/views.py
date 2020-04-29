@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from .models import CustomUser
 from projects.models import Donation
 from projects.models import Project
+from categories.models import Category
 from django.core.paginator import Paginator
 from django.db.models import Q, Avg
 from django.http import JsonResponse
@@ -69,6 +70,17 @@ def user_donations(request, id):
     projects = Project.objects.all()
     donations_data = {'donations': donations, 'projects': projects}
     return render(request, 'users/user_donations.html', donations_data)
+    
+def user_projects(request, id):
+    projects = Project.objects.filter(user_id=id)
+    categories = Category.objects.all()
+    projects_data = {'categories': categories, 'projects': projects}
+    return render(request, 'users/user_projects.html', projects_data)
+
+def delete_project(request, id, project_id):
+    Project.objects.filter(pk=project_id).delete()
+    return redirect(user_projects, id)
+    
 
 def home(req):
     categories = Category.objects.all()

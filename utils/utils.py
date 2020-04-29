@@ -1,4 +1,4 @@
-from projects.models import Report,Project
+from projects.models import Report,Project,Reply
 
 
 def project_is_reported(projects):
@@ -14,6 +14,7 @@ def comment_is_reported(comments):
     user_id=1
     for comment in comments:
         is_reported = Report.objects.filter(comment_id=comment.id,project_id=comment.project.id,user_id=user_id).count() != 0
+        comment.replies = Reply.objects.filter(comment_id=comment.id)
         comment.is_reported = is_reported
         # print(is_reported)
     return comments

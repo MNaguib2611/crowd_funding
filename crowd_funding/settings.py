@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "django_static_fontawesome",
+    'bootstrap4',
+    'mathfilters',
+      'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +84,7 @@ DATABASES = {
         'NAME': 'crowd_funding',
         'USER': 'root',
         # 'PASSWORD': 'ITIintake40',
-        # 'PASSWORD': '41195',
+        'PASSWORD': '',
         'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
         # 'PORT': '3306',
         "OPTIONS": {

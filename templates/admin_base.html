@@ -521,45 +521,39 @@
             <div class="scrollbar-sidebar">
                 <div class="app-sidebar__inner">
                     <ul class="vertical-nav-menu mb-5">
-                        <li class="app-sidebar__heading">Home</li>
+                        {% comment %}<li class="app-sidebar__heading">Dashboards</li>
                         <li>
                             <a href="{% url 'home' %}" class="mm-active">
                                 <i class="metismenu-icon pe-7s-rocket"></i>
                                 Home
                             </a>
-                        </li>
+                        </li>{% endcomment %}
                         <li class="app-sidebar__heading">Projects</li>
                         <li>
-                            <a href="{% url 'index' %}">
+                            <a href="{% url 'admin_projects' %}">
                                 <i class="metismenu-icon pe-7s-display2"></i>
                                 All Projects
                             </a>
-                            <a href="{% url 'launch' %}">
+                            {% comment %}<a href="{% url 'launch' %}">
                                 <i class="metismenu-icon pe-7s-eyedropper">
                                 </i>
                                 Create Project
-                            </a>
-                            <a href="{% url 'user_projects_url' 1 %}">
-                                <i class="metismenu-icon pe-7s-eyedropper">
-                                </i>
-                                My Projects
-                            </a>
+                            </a>{% endcomment %}
                         </li>
-                        <li class="app-sidebar__heading">Profile</li>
+                        <li class="app-sidebar__heading">Categories</li>
                         <li>
-                            <a href="{% url 'view_user_profile' 1  %}">
+                            <a href="{% url 'categories' %}">
                                 <i class="metismenu-icon pe-7s-display2"></i>
-                                My Profile
+                                All Categories
                             </a>
                         </li>
-                        <li class="app-sidebar__heading">donations</li>
+{% comment %}                        <li class="app-sidebar__heading">Users</li>
                         <li>
-                            <a href="{% url 'user_donations_url' 1 %}">
+                            <a href="route('users.index')}}">
                                 <i class="metismenu-icon pe-7s-display2"></i>
-                                My Donations
+                                View Users
                             </a>
                         </li>
-                       {% comment %}
                         <li class="app-sidebar__heading">Categories</li>
                         <li>
                             <a href="route('categories.index')}}">

@@ -5,6 +5,7 @@
 
 .card-inner {
     margin-left: 4rem;
+    padding: 0;
 }
 
 #category {
@@ -12,6 +13,9 @@
 }
 
 #comment-area {
+    padding: 5px;
+}
+#reply-area {
     padding: 5px;
 }
 
@@ -76,7 +80,6 @@ img {
 
 /* Slideshow container */
 .slideshow-container {
-    /* max-width: 1000px; */
     width: 100%;
     position: relative;
     margin: auto;
@@ -243,4 +246,8 @@ img {
 /* Add rounded corners to the top left and the top right corner of the image */
 .card-proj img {
     border-radius: 5px 5px 0 0;
+}
+
+.show-project{
+    z-index: 1000000;
 }

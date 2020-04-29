@@ -5,6 +5,7 @@
 {% block links %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 {% load static %}
+{% load humanize %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/show.css' %}">
 {% endblock %}
 {% block container %}
@@ -12,18 +13,18 @@
 
 
 
-<div class="pt-1 pb-1">
+<div class="pt-1 pb-1 show-project">
     <h2>{{project.title.capitalize}} <small></small>
         {% if not reported %}
         <a href="{% url 'report_project' project.id %} ">
             <button {% if project.is_reported %} {{ "disabled" }} {% endif %} class="btn btn-danger btn-sm float-right"
                 title="report">
-                <i class="fa fa-ban h-100 w-100" aria-hidden="true"></i>
+                <i class="fas fa-ban"></i>
             </button>
         </a>
         {% else %}
         <button class="btn btn-secondary btn-sm float-right" title="you reported this project">
-            <i class="fa fa-ban h-100 w-100" aria-hidden="true"></i>
+            <i class="fas fa-ban " ></i>
         </button>
         {% endif %}
 
@@ -65,6 +66,9 @@
         <div style="text-align:center">
             {% for picture in pictures %}
             <span class="dot"></span>
+            {% empty %}
+            <span class="dot"></span>
+            <span class="dot"></span>
             {% endfor %}
         </div>
 
@@ -79,7 +83,7 @@
                 <i>Description :
                     <span title="Rate: {{rating}} / 5">
                         {% if rating_f > 4 %}
-                        <span class="float-right"><i class="text-warning fa fa-star-half-o"></i></span>
+                        <span class="float-right"><i class="text-warning fa fa-star-half"></i></span>
                         {% endif %}
                         {% for number in rating_i %}
                         <span class="float-right"><i class="text-warning fa fa-star"></i></span>
@@ -118,7 +122,7 @@
                 <form method="post" action="{% url 'comment_url' %}">
                     {% csrf_token %}
                     <input type="hidden" name="project_id" id="project_id_hidden" value="{{project.id}}">
-                    <textarea name="comment" id="comment-area" class="w-100" rows="3"></textarea>
+                    <textarea name="comment" id="comment-area" class="w-100" rows="3" maxlength="255"></textarea>
                     <input type="submit" value="comment" class="btn btn-lg btn-success float-right">
                 </form>
             </div>
@@ -167,8 +171,8 @@ $("#target").html(`${percent_width}%`)
     <div class="card-body">
         <div class="row">
             <div class="col-md-2">
-                <img src="{{comment.user.picture}}" class="img img-rounded img-fluid" />
-                <p class="text-secondary text-center">{{comment.created_at}}</p>
+                <img src="{{comment.user.picture}}" class="img img-rounded img-fluid" style="height:5rem;" />
+                <small class="text-secondary text-center m-0 ml-2">{{comment.created_at|naturaltime}}</small>
             </div>
             <div class="col-md-10">
                 <p>
@@ -177,24 +181,58 @@ $("#target").html(`${percent_width}%`)
                 </p>
                 <div class="clearfix"></div>
                 <p>{{comment}}</p>
+                <p>
+                    <a class="float-right btn btn-outline-primary ml-2 reply-to-comment"> <i class="fa fa-reply"></i> Reply</a>
+               </p>
                 {% if comment.is_reported %}
                 <button disabled class="btn btn-secondary btn-sm float-right" title="you have reported this comment">
-                    <i class="fa fa-ban h-100 w-100" aria-hidden="true"></i>
+                    <i class="fas fa-ban "></i>
                 </button>
                 {% else %}
                 <a href="{% url 'report_comment' project.id  comment.id%} ">
                     <button class="btn btn-danger btn-sm float-right" title="report">
-                        <i class="fa fa-ban h-100 w-100" aria-hidden="true"></i>
+                        <i class="fas fa-ban"></i>
                     </button>
                 </a>
                 {% endif %}
 
+
             </div>
 
+        </div>
+        {% for reply in comment.replies %}
+        <div class="card card-inner">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-md-2">
+                        <img src="{{reply.user.picture}}" class="img img-rounded img-fluid"/>
+                        <small class="text-secondary text-center m-0 ml-2">{{reply.created_at|naturaltime}}</small>
+                    </div>
+                    <div class="col-md-10">
+                        <p><a href="https://maniruzzaman-akash.blogspot.com/p/contact.html"><strong>{{reply.user}}</strong></a></p>
+                        <p>{{ reply }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="col-md-9">
+            <form method="post" action="{% url 'reply_url' %}" class="reply-form" style="display:none;">
+                {% csrf_token %}
+                <input type="hidden" name="comment_id" id="comment_id_hidden" value="{{comment.id}}">
+                <textarea name="reply" id="reply-area" class="w-100" rows="3" maxlength="255"></textarea>
+                <input type="submit" value="reply" class="btn btn-lg btn-primary float-right">
+            </form>
         </div>
 
     </div>
 </div>
+
+
+
+
+
+
 {% empty %}
 <h3>No Comments Yet</h3>
 {% endfor %}
@@ -278,6 +316,7 @@ $("#target").html(`${percent_width}%`)
 
 {% block scripts %}
 <script src="{% static 'js/show.js' %}"></script>
+<script src="{% static 'js/donate.js' %}"></script>
 {% endblock %}
 
 

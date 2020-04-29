@@ -3,7 +3,7 @@ from users.models import CustomUser as User
 from categories.models import Category
 from enum import Enum
 
-    
+from datetime import datetime   
 
    
 
@@ -59,16 +59,26 @@ class Comment (models.Model):
     user     = models.ForeignKey(User, on_delete=models.CASCADE)
     project  = models.ForeignKey(Project, on_delete=models.CASCADE)
     comment    = models.CharField(max_length=255) 
-    # created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return "%s" % (self.comment)
+
+
+class Reply (models.Model):
+    user      = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment   = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    reply     =  models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return "%s" % (self.reply)
+
 
 class Report (models.Model):
     user     = models.ForeignKey(User, on_delete=models.CASCADE)
     project  = models.ForeignKey(Project, on_delete=models.CASCADE)
     #if comment id is null ->project report
     #if comment id is not null ->comment report
-    comment  = models.ForeignKey(Comment, on_delete=models.CASCADE,null=True)
+    comment  = models.ForeignKey(Comment, on_delete=models.CASCADE)
     
    
 
