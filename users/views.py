@@ -1,7 +1,14 @@
 from django.http import HttpResponse
+from django.http import JsonResponse
 from .models import CustomUser
+from projects.models import Donation
+from projects.models import Project
+from categories.models import Category
 from django.core.paginator import Paginator
+from django.db.models import Q, Avg
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
+
 from django.views.generic import View
 from django.contrib import messages
 from validate_email import validate_email
@@ -24,67 +31,19 @@ from .utils import generate_token
 from django.core.mail import EmailMessage 
 from django.conf import  settings
 from django.contrib.auth import authenticate, login, logout
+from .forms import EditImgForm  
+from datetime import datetime
+
 
 
 from categories.models import Category
-from projects.models import Project, Donation, Report
+from projects.models import Project, Donation, Report, Tag
 from utils.utils import project_is_reported
 import re
 
 
 
-# Create your views here.
-# class RegisterationView(View):
-#      def get(self,request):
-#         return render(request,'register.html')
 
-#      def post(self, request):
-#        context={
-#         'data' : request.POST,
-#         'has error': False
-#        }
-#        email = request.POST.get('mail')
-#        fname = request.POST.get('fname')
-#        lname = request.POST.get('lname')
-#        phone = request.POST.get('phone')
-#        password = request.POST.get('pass')
-#        confpassword = request.POST.get('conf')
-
-#        if len(password)<6:
-#           messages.add_message(request,messages.ERROR,'Password should at least 6 characters long ') 
-#           context['has error'] = True
-#        if password != confpassword:
-#           messages.add_message(request,messages.ERROR,'Passwords donot matches')
-#           context['has error'] = True
-#        if not validate_email(email):
-#           messages.add_message(request,messages.ERROR,'please Insert valid Email')
-#           context['has error'] = True
-#        try:
-#             if User.objects.get(email=email):
-#               messages.add_message(request,messages.ERROR,'Email is taken')
-#               context['has error'] = True
-#        except Exception as identifier:
-#             pass
-
-
-#        if context['has error']:
-#           return render(request,'register.html', context)
-#        user = User.objects.create_user(password = password, email = email, username=fname)
-#        user.set_password(password)
-#        user.first_name = fname
-#        user.last_name =  lname
-#        user.email = email
-#        user.password = password
-#        user.is_active = True
-
-#        user.save()
-#        messages.add_message(request,messages.SUCCESS,'Account Created Successfully')
-#        return redirect('login')
-          
-# class LoginView(View):
-#     def get(self,request):
-#         return render(request,'login.html')
-###################################################################################
 def email_validator(email):
     if len(email) > 7:
         if re.match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$", email) is not None:
@@ -148,9 +107,7 @@ def signup(request):
             context['has error'] = True
 
         
-        # if len(password)<6:
-        #     messages.add_message(request,messages.ERROR,'Password should at least 6 characters long ') 
-        #     context['has error'] = True
+
 
         if not first_name and not last_name and not email and not password and not password2 and not phone:   
            messages.add_message(request,messages.ERROR,'Fields Cannot be blank ') 
@@ -220,6 +177,7 @@ class ActivateAccountView(View):
         try:
             uid=force_text(urlsafe_base64_decode(uidb64))
             user=User.objects.get(pk=uid)
+            print("fsss")
             print(user)
         except Exception as identifier:
             user=None
@@ -246,11 +204,69 @@ def logOut(request):
 def view_user_profile(request, id):
     user = CustomUser.objects.filter(id=id)
     user = user[0]
-    user_data = {'user': user}
-    return render(request, 'user_profile.html', user_data)
+    form = EditImgForm()
+    user_data = {'user': user, 'form': form}
+    return render(request, 'users/user_profile.html', user_data)
 
+def edit_photo(request, id):
+    return redirect(view_user_profile, id)
+    
+def edit_name(request, id):
+    first_name = request.POST['first_name']
+    last_name = request.POST['last_name']
+    CustomUser.objects.filter(pk=id).update(first_name=first_name, last_name=last_name)
+    return redirect(view_user_profile, id)
+    
+def edit_birthdate(request, id):
+    birth_date = request.POST['birth_date']
+    CustomUser.objects.filter(pk=id).update(birth_date=birth_date)
+    return redirect(view_user_profile, id)
+    
+def edit_country(request, id):
+    country = request.POST['country']
+    CustomUser.objects.filter(pk=id).update(country=country)
+    return redirect(view_user_profile, id)
+    
+def edit_password(request, id):
+    password = request.POST['password']
+    CustomUser.objects.filter(pk=id).update(password=password)
+    return redirect(view_user_profile, id)
+    
+def edit_phone(request, id):
+    phone = request.POST['phone']
+    CustomUser.objects.filter(pk=id).update(phone=phone)
+    return redirect(view_user_profile, id)
+    
+def edit_fb_page(request, id):
+    fb_page = request.POST['fb_page']
+    CustomUser.objects.filter(pk=id).update(fb_page=fb_page)
+    return redirect(view_user_profile, id)
 
-#def home(req):
+def delete_account(request, id):
+    # user = CustomUser.objects.filter(id=id)
+    # user = user[0]
+    # if user.password == request.POST['pass']:   # will be changed and use ajax when using password to delete           
+    CustomUser.objects.filter(pk=id).delete()     
+    return redirect(view_user_profile, id)   # will be changed----->error here
+
+def user_donations(request, id):
+    donations = Donation.objects.filter(user_id=id)
+    projects = Project.objects.all()
+    donations_data = {'donations': donations, 'projects': projects}
+    return render(request, 'users/user_donations.html', donations_data)
+    
+def user_projects(request, id):
+    projects = Project.objects.filter(user_id=id)
+    categories = Category.objects.all()
+    projects_data = {'categories': categories, 'projects': projects}
+    return render(request, 'users/user_projects.html', projects_data)
+
+def delete_project(request, id, project_id):
+    Project.objects.filter(pk=project_id).delete()
+    return redirect(user_projects, id)
+    
+
+def home(req):
     categories = Category.objects.all()
 
     latest_projects = project_is_reported(Project.objects.all().order_by('-start_date')[:5])
@@ -268,7 +284,12 @@ def view_user_profile(request, id):
     page_number_latest_featured_projects = req.GET.get('page_latest_featured_project')
     page_obj_latest_featured_projects = paginator_latest_featured_projects.get_page(page_number_latest_featured_projects)
 
-
+    highest_rated_projects = project_is_reported(Project.objects.filter(end_date__gt=datetime.now()).annotate(rate_avg=Avg('rate__rate')).order_by('-rate_avg')[:5])
+    print(highest_rated_projects)
+    paginator_highest_rated_projects = Paginator(highest_rated_projects, 3)  # Show 25 contacts per page.
+    page_number_highest_rated_projects = req.GET.get('page_highest_rated_projects')
+    page_obj_highest_rated_projects = paginator_highest_rated_projects.get_page(
+        page_number_highest_rated_projects)
 
     context = {
         "projects_by_category":
@@ -284,6 +305,9 @@ def view_user_profile(request, id):
         "page_obj_latest_featured_projects":
             {'page_obj': page_obj_latest_featured_projects,
              'projects': page_obj_latest_featured_projects.object_list},
+        "highest_rated_projects":
+            {'page_obj': page_obj_highest_rated_projects,
+             'projects': page_obj_highest_rated_projects.object_list},
     }
     # print(context)
     return render(req, 'users/home.html',context)
@@ -319,5 +343,15 @@ def report_project(req,id):
 
     return redirect(req.META.get('HTTP_REFERER'))
 
+def report_comment(req,project_id,comment_id):
+    user_id = 1
+    report = Report(user_id=user_id,project_id=project_id,comment_id=comment_id)
+    report.save()
+
+    return redirect(req.META.get('HTTP_REFERER'))
 
 
+def search(req):
+    search_value = req.GET.get('searchValue')
+    projects = Project.objects.filter(Q(tag__tag__icontains=search_value) |  Q(title__icontains=search_value)).distinct().values()
+    return JsonResponse(list(projects),safe=False)

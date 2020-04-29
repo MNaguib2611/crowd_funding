@@ -55,7 +55,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     def __str__(self):
-        return "%s %s" % (self.first_name, self.last_name)
+        return "%s %s" % (self.first_name.capitalize(), self.last_name.capitalize())
 
 
 

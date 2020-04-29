@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "django_static_fontawesome",
+    'bootstrap4',
+    'mathfilters',
+      'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -83,12 +86,12 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': 'localhost', 
         'PORT': '3306',
-        # "OPTIONS": {
-        #     'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        "OPTIONS": {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 
         #     # "unix_socket": "/tmp/mysql-dev.sock",
         #     #'unix_socket': '/opt/lampp/var/mysql/mysql.sock',
-        # }
+        }
     }
 }
 
