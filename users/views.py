@@ -355,3 +355,6 @@ def search(req):
     search_value = req.GET.get('searchValue')
     projects = Project.objects.filter(Q(tag__tag__icontains=search_value) |  Q(title__icontains=search_value)).distinct().values()
     return JsonResponse(list(projects),safe=False)
+
+def landing(request):
+    return redirect('/users/home')

@@ -14,7 +14,7 @@
     </div>
     <div class="card-body">
       <p class="card-text">Show, update or delete all Categories.</p>
-      <button type="button" onclick="showmodal()" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
+      <button type="button" onclick="addCategory()" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
         Add new category
       </button>
     </div>
@@ -53,6 +53,9 @@
   </div>
 </div>
 
+{% endblock %}
+
+{% block modal %}
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -79,8 +82,8 @@
     </div>
   </div>
 </div>
-
 {% endblock %}
+
 {% block scripts %}
     <script>
       function editCategory(id, name){
@@ -89,6 +92,11 @@
 
         let form = document.getElementById('categoryForm');
         form.setAttribute('action', `/admin/category/${id}`);
+      }
+
+      function addCategory(){
+        let catName = document.getElementById('InputName1');
+        catName.value = '';
       }
     </script>
 {% endblock %}
