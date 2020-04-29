@@ -158,6 +158,7 @@ def signin(request):
                     email = request.POST['mail']
                     password =request.POST['pass']
                     user = auth.authenticate(email=email, password=password)
+                    print(user)
                     if user is not None:
                         auth.login(request, user)
                         return redirect('home')
