@@ -30,14 +30,16 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django_countries.fields import CountryField
 from .managers import CustomUserManager
+# from .forms import User
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField(_('email address'), unique=True)
+    password = models.CharField(max_length=255)
     phone = models.CharField(max_length=255)
-    birth_date = models.DateField()
+    # birth_date = models.DateField()
     country = CountryField()
     picture = models.URLField(null=True)
     fb_page = models.URLField(null=True)
