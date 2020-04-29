@@ -219,7 +219,6 @@ def rate(req,project_id):
 def all_reported_comments(request):
     all_reports = Report.objects.exclude(comment_id=None)
     reports = [all_reports.filter(comment_id=item['comment_id']).last() for item in Report.objects.values('comment_id').distinct()]
-    print(reports[0])
     return render(request, 'projects/admin/reported_comments.html', {'reports': reports} )
 
 def delete_comment(request, id):
