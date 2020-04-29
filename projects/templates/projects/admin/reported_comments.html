@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'admin_base.html' %}
 {% load static %}
 {% block title %}
     {{ "Home" }}
@@ -10,10 +10,10 @@
 
 <div class="card">
     <div class="card-header">
-      All comments
+      All Reported comments
     </div>
     <div class="card-body">
-      <p class="card-text">Show, update or delete all Projects.</p>
+      <p class="card-text">Show, update or delete all reported comments.</p>
     </div>
   {% if msg != None %}
     <div class="alert alert-{{alert}}" role="alert">

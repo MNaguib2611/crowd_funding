@@ -107,7 +107,6 @@
                             </div>
                             <div class="widget-content-left  ml-3 header-user-info">
                                 <div class="widget-heading">
-                                    Auth::user()->name}}
                                 </div>
                             </div>
                         </div>
@@ -540,11 +539,24 @@
                                 Create Project
                             </a>{% endcomment %}
                         </li>
+                        <li>
+                            <a href="/admin/projects/reported_project">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Reported Projects
+                            </a>
+                        </li>
                         <li class="app-sidebar__heading">Categories</li>
                         <li>
                             <a href="{% url 'categories' %}">
                                 <i class="metismenu-icon pe-7s-display2"></i>
                                 All Categories
+                            </a>
+                        </li>
+                        <li class="app-sidebar__heading">Comments</li>
+                        <li>
+                            <a href="/admin/projects/comments/reported/">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                All Reported comments
                             </a>
                         </li>
 {% comment %}                        <li class="app-sidebar__heading">Users</li>
