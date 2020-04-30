@@ -39,7 +39,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
     password = models.CharField(max_length=255)
     phone = models.CharField(max_length=255)
-    # birth_date = models.DateField()
+    # birth_date = models.DateField(default=None)
     country = CountryField()
     picture = models.URLField(null=True)
     fb_page = models.URLField(null=True)

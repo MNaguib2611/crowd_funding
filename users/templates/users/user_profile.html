@@ -6,7 +6,6 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 {% endblock %}
 
 {% block container %}
@@ -180,155 +179,225 @@
         
     </div>
     <br> <br>
-{% endblock %}
+    
+    
+    {% endblock %}
+    
+    {% block modal %}
 
-{% block modal %}
-<div class="col-md-12 modal fade edit_form" role="dialog" id="editImg">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="col-md-10 modal-content card">
-            <div class="card-header card-header-primary modal-header">
-                <h5 class="card-title">Change Photo</h5>
+    <!--  #########  edit picture ########## -->
+        <div class="modal fade" id="editImg" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Change Photo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'edit_photo_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                        {% csrf_token %} 
+                        {{ form.as_p }} 
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" value="Edit" class="btn btn-primary"> 
+                    </form> 
+                </div>
             </div>
-            <div class="card-body modal-body">
-                <form action="{% url 'edit_photo_url' user.id %}" method="POST" enctype="multipart/form-data"> 
-                    {% csrf_token %} 
-                    {{ form.as_p }} 
-                    <input type="submit" value="Edit" class="btn btn-primary"> 
-                </form> 
-            </div>
-        </div>
-    </div>
-</div>
-<div class="col-md-12 modal edit_form" role="dialog" id="editName">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="col-md-10 modal-content card">
-            <div class="card-header card-header-primary modal-header">
-                <h5 class="card-title">Change Name</h5>
-            </div>
-            <div class="card-body modal-body">
-                <form action="{% url 'edit_name_url' user.id %}" method="POST" enctype="multipart/form-data"> 
-                    {% csrf_token %} 
-                    <label>First Name</label>
-                    <input type="text" name="first_name" class="form-control edited_value" value="{{ user.first_name }}" required/></br />
-                    <label>Last Name</label>
-                    <input type="text" name="last_name" class="form-control edited_value" value="{{ user.last_name }}" required/><br />
-                    <input type="submit" value="Edit" class="btn btn-primary"> 
-                </form> 
             </div>
         </div>
-    </div>
-</div>
-<div class="col-md-12 modal fade edit_form" role="dialog" id="editBirthdate">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="col-md-10 modal-content card">
-            <div class="card-header card-header-primary modal-header">
-                <h5 class="card-title">Change birthdate</h5>
-            </div>
-            <div class="card-body modal-body">
-                <form action="{% url 'edit_birthdate_url' user.id %}" method="POST" enctype="multipart/form-data"> 
-                    {% csrf_token %} 
-                    <label>Birthdate</label>
-                    <input type="date" name="birth_date" class="form-control edited_value" value="{{ user.birth_date }}" required/></br />
-                    <input type="submit" value="Edit" class="btn btn-primary"> 
-                </form> 
-            </div>
-        </div>
-    </div>
-</div>
-<div class="col-md-12 modal fade edit_form" role="dialog" id="editCountry">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="col-md-10 modal-content card">
-            <div class="card-header card-header-primary modal-header">
-                <h5 class="card-title">Change Country</h5>
-            </div>
-            <div class="card-body modal-body">
-                <form action="{% url 'edit_country_url' user.id %}" method="POST" enctype="multipart/form-data"> 
-                    {% csrf_token %} 
-                    <label>Country</label>
-                    <input type="text" name="country" class="form-control edited_value" value="{{ user.country }}" required/></br />
-                    <input type="submit" value="Edit" class="btn btn-primary"> 
-                </form> 
-            </div>
-        </div>
-    </div>
-</div>
-<div class="col-md-12 modal fade edit_form" role="dialog" id="editPassword">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="col-md-10 modal-content card">
-            <div class="card-header card-header-primary modal-header">
-                <h5 class="card-title">Change Password</h5>
-            </div>
-            <div class="card-body modal-body">
-                <form action="{% url 'edit_password_url' user.id %}" method="POST" enctype="multipart/form-data"> 
-                    {% csrf_token %} 
-                    <label>Password</label>
-                    <input type="password" name="password" class="form-control edited_value" value="{{ user.password }}" required/></br />
-                    <input type="submit" value="Edit" class="btn btn-primary"> 
-                </form> 
-            </div>
-        </div>
-    </div>
-</div>
-<div class="col-md-12 modal fade edit_form" role="dialog" id="editPhone">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="col-md-10 modal-content card">
-            <div class="card-header card-header-primary modal-header">
-                <h5 class="card-title">Change Phone</h5>
-            </div>
-            <div class="card-body modal-body">
-                <form action="{% url 'edit_phone_url' user.id %}" method="POST" enctype="multipart/form-data"> 
-                    {% csrf_token %} 
-                    <label>Phone</label>
-                    <input type="tel" name="phone" class="form-control edited_value" value="{{ user.phone }}" pattern="(01)(0|1|2|5)[0-9]{8}" required> <br />
-                    <small>Format: 01nn-nnn-nnnn</small><br>
-                    <input type="submit" value="Edit" class="btn btn-primary"> 
-                </form> 
-            </div>
-        </div>
-    </div>
-</div>
-<div class="col-md-12 modal fade edit_form" role="dialog" id="editFb_page">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="col-md-10 modal-content card">
-            <div class="card-header card-header-primary modal-header">
-                <h5 class="card-title">Change facebook account</h5>
-            </div>
-            <div class="card-body modal-body">
-                <form action="{% url 'edit_fb_page_url' user.id %}" method="POST" enctype="multipart/form-data"> 
-                    {% csrf_token %} 
-                    <label>FACEBOOK Page</label>
-                    <input type="url" name="fb_page" class="form-control edited_value" value="{{ user.fb_page }}" required/></br />
-                    <input type="submit" value="Edit" class="btn btn-primary"> 
-                </form> 
-            </div>
-        </div>
-    </div>
-</div>
+            
 
-<div class="modal fade" id="deleteAccount" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+    <!--  #########  edit name ########## -->
+        <div class="modal fade" id="editName" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Change Name</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'edit_name_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                        {% csrf_token %} 
+                        <label>First Name</label>
+                        <input type="text" name="first_name" class="form-control edited_value" value="{{ user.first_name }}" required/></br />
+                        <label>Last Name</label>
+                        <input type="text" name="last_name" class="form-control edited_value" value="{{ user.last_name }}" required/><br />
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" value="Edit" class="btn btn-primary"> 
+                    </form> 
+                </div>
+            </div>
+            </div>
         </div>
-        <div class="modal-body">
-          ...
+
+    <!--  #########  edit birthdate ########## -->
+        <div class="modal fade" id="editBirthdate" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Change Birthdate</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'edit_birthdate_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                        {% csrf_token %} 
+                        <label>Birthdate</label>
+                        <input type="date" name="birth_date" class="form-control edited_value" value="{{ user.birth_date }}" required/></br />
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" value="Edit" class="btn btn-primary"> 
+                    </form> 
+                </div>
+            </div>
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Understood</button>
+
+
+    <!--  #########  edit country ########## -->
+        <div class="modal fade" id="editCountry" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Change Country</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'edit_country_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                        {% csrf_token %} 
+                        <label>Country</label>
+                        <input type="text" name="country" class="form-control edited_value" value="{{ user.country }}" required/></br />
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" value="Edit" class="btn btn-primary"> 
+                    </form> 
+                </div>
+            </div>
+            </div>
         </div>
-      </div>
-    </div>
-</div>
+
+
+
+    <!--  #########  edit password ########## -->
+        <div class="modal fade" id="editPassword" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Change Password</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'edit_password_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                        {% csrf_token %} 
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control edited_value" value="{{ user.password }}" required/></br />
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" value="Edit" class="btn btn-primary"> 
+                    </form> 
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+
+
+    <!--  #########  edit phone ########## -->
+        <div class="modal fade" id="editPhone" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Change Phone</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'edit_phone_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                        {% csrf_token %} 
+                        <label>Phone</label>
+                        <input type="tel" name="phone" class="form-control edited_value" value="{{ user.phone }}" pattern="(01)(0|1|2|5)[0-9]{8}" required> <br />
+                        <small>Format: 01nn-nnn-nnnn</small><br>
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" value="Edit" class="btn btn-primary"> 
+                    </form> 
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+
+    <!--  #########  edit facbook acount ########## -->
+        <div class="modal fade" id="editFb_page" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">Change facebook account</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'edit_fb_page_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                        {% csrf_token %} 
+                        <label>FACEBOOK Page</label>
+                        <input type="url" name="fb_page" class="form-control edited_value" value="{{ user.fb_page }}" required/></br />
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" value="Edit" class="btn btn-primary"> 
+                    </form> 
+                </div>
+              </div>
+            </div>
+        </div>
+
+ <!--  #########  delete acount ########## -->
+        <div class="modal fade" id="deleteAccount" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">Confirm Delete</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'delete_account_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                        {% csrf_token %} 
+                        <input type="checkbox" class="form-check-input" id="confirmDelete" style="margin-left: 6px;" required>
+                        <label class="form-check-label" for="confirmDelete">your account will be deleted</label><br /><br />
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" value="delete" class="btn btn-primary"> 
+                    </form> 
+                </div>
+              </div>
+            </div>
+          </div>
+
 {% endblock %}
 
 {% block scripts %}
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="/static/users/js/userProfile.js"></script>
 {% endblock %}
