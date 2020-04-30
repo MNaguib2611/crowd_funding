@@ -189,7 +189,7 @@ def show(request,project_id):
     context={
         'projects' : projects,
         'project'  : project_data,
-        'time'     :  project_data.end_date.date() < datetime.now().date(),
+        'time'     :  project_data.end_date < datetime.now().date(),
         'pictures'  : pictures_data,
         'reported' : is_reported,
         'comments' : comments,

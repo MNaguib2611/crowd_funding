@@ -78,7 +78,7 @@ class Report (models.Model):
     project  = models.ForeignKey(Project, on_delete=models.CASCADE)
     #if comment id is null ->project report
     #if comment id is not null ->comment report
-    comment  = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    comment  = models.ForeignKey(Comment, on_delete=models.CASCADE,null=True)
     
    
 
