@@ -57,23 +57,3 @@
         color: white;
     }
     
-    .edit_form .edited_value {
-        background-color: #fff;
-        border: none;
-        border-radius: 0px;
-        border-bottom: solid 1px #d9d9d9
-    }
-    
-    .edit_form .card {
-        margin-top: 50px;
-        margin-left: -100px;
-        border: solid 1px rgb(104, 99, 99);
-    }
-    
-    .edit_form label {
-        color: rgb(158, 154, 154);
-    }
-    
-    .edit_form .card-header {
-        color: rgb(109, 107, 107);
-    }

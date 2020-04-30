@@ -38,7 +38,7 @@
                                     {% endif %}
                                 {% endfor %}
                                 <td>
-                                    <a href="" class="btn btn-success">EDIT</a>
+                                    <a href="{% url 'edit_project_url' project.id %}" class="btn btn-success">EDIT</a>
                                     {% if project.current|div:project.target < 0.25 %}
                                         <a href="{% url 'delete_project_url' project.user_id project.id %}" class="btn btn-danger">DELETE</a>
                                     {% endif %}

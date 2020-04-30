@@ -124,7 +124,6 @@ dmypy.json
 .env
 env
 build
-.installed.cfg
 bin
 develop-eggs
 dist
@@ -132,18 +131,16 @@ eggs
 parts
 lib
 lib64
-*.py[cod]
 *.swp
 *.sqlite3
 config.ini
-.idea/
 .vscode/
 *.coverage
 coverage.svg
 *.DS_Store
-.env
 venv
 uploads/users/avatars
 uploads/projects/covers
 uploads/projects/images
 info
+.Aenv

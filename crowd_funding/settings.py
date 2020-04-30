@@ -24,7 +24,9 @@ SECRET_KEY = 'p@s-5bflh2asnqel1br+xa9d88t9n04e^jn1=zo1@8e222l+i8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0","127.0.0.1"]
+
+LOGIN_URL = '/login'
 
 # Application definition
 
@@ -42,7 +44,7 @@ INSTALLED_APPS = [
     "django_static_fontawesome",
     'bootstrap4',
     'mathfilters',
-      'django.contrib.humanize',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -84,13 +86,13 @@ DATABASES = {
         'NAME': 'crowd_funding',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': 'localhost', 
+        'HOST': '127.0.0.1', 
         'PORT': '3306',
         "OPTIONS": {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 
         #     # "unix_socket": "/tmp/mysql-dev.sock",
-        #     #'unix_socket': '/opt/lampp/var/mysql/mysql.sock',
+            'unix_socket': '/opt/lampp/var/mysql/mysql.sock',
         }
     }
 }

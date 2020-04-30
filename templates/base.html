@@ -85,6 +85,11 @@
                                 <div class="btn-group">
                                     <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                        class="p-0 btn">
+                                        {% if user.is_authenticated %}
+                                            {{user.first_name}}
+                                        {% else %}
+                                            {{user}}
+                                        {% endif %}
                                         <img width="42" class="rounded-circle" src="{{user}}" alt="">
                                         <i class="fa fa-angle-down ml-2 opacity-8"></i>
                                     </a>
@@ -108,7 +113,7 @@
                             </div>
                             <div class="widget-content-left  ml-3 header-user-info">
                                 <div class="widget-heading">
-                                    Auth::user()->name}}
+                                    {{user}}
                                 </div>
                             </div>
                         </div>
@@ -540,7 +545,7 @@
                                 </i>
                                 Create Project
                             </a>
-                            <a href="{% url 'user_projects_url' 1 %}">
+                            <a href="{% url 'user_projects_url' user.id %}">
                                 <i class="fas fa-funnel-dollar"></i>
                                 </i>
                                 My Projects
@@ -548,14 +553,14 @@
                         </li>
                         <li class="app-sidebar__heading">Profile</li>
                         <li>
-                            <a href="{% url 'view_user_profile' 1  %}">
+                            <a href="{% url 'view_user_profile' user.id  %}">
                                 <i class="fas fa-id-badge"></i>
                                 My Profile
                             </a>
                         </li>
                         <li class="app-sidebar__heading">donations</li>
                         <li>
-                            <a href="{% url 'user_donations_url' 1 %}">
+                            <a href="{% url 'user_donations_url' user.id %}">
                                 <i class="fas fa-hand-holding-usd"></i>
                                 My Donations
                             </a>
@@ -612,7 +617,7 @@
         </div>
     </div>
 </div>
-
+{% block modal %}{% endblock %}
 <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc="
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
