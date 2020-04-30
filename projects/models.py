@@ -51,7 +51,7 @@ class Tag (models.Model):
 
 class Donation (models.Model):
     user     = models.ForeignKey(User, on_delete=models.SET_NULL,null=True)
-    project  = models.ForeignKey(Project, on_delete=models.PROTECT)
+    project  = models.ForeignKey(Project, on_delete=models.SET_NULL,null=True)
     amount   = models.IntegerField()
      
 

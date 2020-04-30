@@ -153,12 +153,20 @@ def admin_delete_reported_projects(request, id):
         return redirect('login')
 
     project = Project.objects.get(pk=id)
-    # print(project.id)
+    # if (project_donation):
+    #     project_donation.delete()
+    #     project.delete()
     project_donations,created=Donation.objects.get_or_create(project=project,amount=0)
-    # print(project_donations)
+    print(project_donations)
     project_donation=Donation.objects.filter(project=id)
-    if (project_donation):
+    if len(project_donation) is 1 and created==True:
         project_donation.delete()
+        project.delete()
+    elif len(project_donation) is 1 and created==False:
+        project_donation.update(project=None)
+        project.delete()    
+    elif  len(project_donation)>1 :
+        project_donation.update(project=None)
         project.delete()
     return redirect('/admin/projects/reported_project')
 
