@@ -304,13 +304,8 @@ def update_project(request, project_id):
         start_date=start_date, end_date=end_date, category_id=category_id)
     return redirect(user_projects)
     
-<<<<<<< HEAD
 
-
-
-=======
 @login_required
->>>>>>> 13518003f6487e77de39739a0bbcb03dbfa3ab0b
 def home(req):
     user_id = req.session['user_id']
     categories = Category.objects.all()
