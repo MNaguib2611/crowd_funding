@@ -260,7 +260,7 @@ def delete_account(request, id):
     # user = user[0]
     # if user.password == request.POST['pass']:   # will be changed and use ajax when using password to delete           
     CustomUser.objects.filter(pk=id).delete()     
-    return redirect(view_user_profile, id)   # will be changed----->error here
+    return redirect(signup)   # will be changed----->error here
 
 def user_donations(request, id):
     donations = Donation.objects.filter(user_id=id)

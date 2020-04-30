@@ -24,7 +24,7 @@ SECRET_KEY = 'p@s-5bflh2asnqel1br+xa9d88t9n04e^jn1=zo1@8e222l+i8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0"]
 
 # Application definition
 
@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "django_static_fontawesome",
     'bootstrap4',
     'mathfilters',
-      'django.contrib.humanize',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
