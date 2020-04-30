@@ -1,8 +1,13 @@
 from django.urls import path
-# from .views import view_user_profile, edit_name
-from users.views import view_user_profile, edit_name, edit_birthdate, edit_country, edit_password, edit_phone, edit_fb_page, edit_photo, delete_account, user_donations,user_projects,delete_project,landing
+from . import views
+# from users.views import home,donate, report_project,signin,signup,logOut , report_comment,report_project, search 
+from users.views import view_user_profile, edit_name, edit_birthdate, edit_country, edit_password, edit_phone, edit_fb_page, edit_photo, delete_account, user_donations,user_projects,delete_project,landing,home,donate, report_project,signin,signup,logOut, search,report_comment
 
+<<<<<<< HEAD
 from users.views import home,donate, report_comment,report_project, search,  update_project, edit_project
+=======
+from . import views
+>>>>>>> 50aa731fc63aafd34bc6664efd0fbdd637421cb0
 
 urlpatterns = [
     path('', landing, name="landing_page"),
@@ -24,5 +29,14 @@ urlpatterns = [
     path('donate', donate,name="donate"),
     path('report_comment/<int:project_id> <int:comment_id>', report_comment,name="report_comment"),
     path('report_project/<int:id>', report_project,name="report_project"),
+    path('register', signup, name='register'),
+    path('login', signin, name='login'),
+    path('logout', logOut , name='logout'),
+    path('activate/<uidb64>/<token>',views.ActivateAccountView.as_view(), name='activate'),
+
+    # path('login', views.LoginView.as_view(), name='login')
+    
+    
+    # path('home/<int:cat_id>', get_projects_by_category,name="get_projects_by_category"),
     path('search', search,name="search"),
 ]
