@@ -207,14 +207,14 @@ def logOut(request):
 
 ##################################################################################
 @login_required
-def view_user_profile(request, id):
-    user = CustomUser.objects.filter(id=id)
+def view_user_profile(request):
+    user = CustomUser.objects.filter(id=request.session['user_id'])
     user = user[0]
     form = EditImgForm()
     user_data = {'user': user, 'form': form}
     return render(request, 'users/user_profile.html', user_data)
 
-def edit_photo(request, id):
+def edit_photo(request):
     if request.method == "POST":
         if request.FILES['picture']:
             folder = 'users/static/images'
@@ -223,71 +223,77 @@ def edit_photo(request, id):
             filename = fs.save(picture.name, picture)
             uploaded_file_url = fs.url(filename)
             photo = uploaded_file_url
-            CustomUser.objects.filter(pk=id).update(picture=photo)
-    return redirect(view_user_profile, id)
+            CustomUser.objects.filter(pk=request.session['user_id']).update(picture=photo)
+    return redirect(view_user_profile)
     
-def edit_name(request, id):
+def edit_name(request):
     if request.method == "POST":
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
-        CustomUser.objects.filter(pk=id).update(first_name=first_name, last_name=last_name)
-    return redirect(view_user_profile, id)
+        CustomUser.objects.filter(pk=request.session['user_id']).update(first_name=first_name, last_name=last_name)
+    return redirect(view_user_profile)
     
-def edit_birthdate(request, id):
+def edit_birthdate(request):
     if request.method == "POST":
         birth_date = request.POST['birth_date']
-        CustomUser.objects.filter(pk=id).update(birth_date=birth_date)
-    return redirect(view_user_profile, id)
+        CustomUser.objects.filter(pk=request.session['user_id']).update(birth_date=birth_date)
+    return redirect(view_user_profile)
     
-def edit_country(request, id):
+
+def edit_country(request):
     if request.method == "POST":
         country = request.POST['country']
-        CustomUser.objects.filter(pk=id).update(country=country)
-    return redirect(view_user_profile, id)
+        CustomUser.objects.filter(pk=request.session['user_id']).update(country=country)
+    return redirect(view_user_profile)
     
-def edit_password(request, id):
+
+def edit_password(request):
     if request.method == "POST":
+        user = CustomUser.objects.filter(id=request.session['user_id'])
+        user = user[0]
         password = request.POST['password']
-        CustomUser.objects.filter(pk=id).update(password=password)
-    return redirect(view_user_profile, id)
+        user.set_password(password)
+        # CustomUser.objects.filter(pk=id).update(password=password)
+        user.save()
+    return redirect(view_user_profile)
     
-def edit_phone(request, id):
+def edit_phone(request):
     if request.method == "POST":
         phone = request.POST['phone']
-        CustomUser.objects.filter(pk=id).update(phone=phone)
-    return redirect(view_user_profile, id)
+        CustomUser.objects.filter(pk=request.session['user_id']).update(phone=phone)
+    return redirect(view_user_profile)
     
-def edit_fb_page(request, id):
+def edit_fb_page(request):
     if request.method == "POST":
         fb_page = request.POST['fb_page']
-        CustomUser.objects.filter(pk=id).update(fb_page=fb_page)
-    return redirect(view_user_profile, id)
+        CustomUser.objects.filter(pk=request.session['user_id']).update(fb_page=fb_page)
+    return redirect(view_user_profile)
 
-def delete_account(request, id):
+def delete_account(request):
     # user = CustomUser.objects.filter(id=id)
     # user = user[0]
     # if user.password == request.POST['pass']:   # will be changed and use ajax when using password to delete           
     if request.method == "POST":
-        CustomUser.objects.filter(pk=id).delete()     
+        CustomUser.objects.filter(pk=request.session['user_id']).delete()     
     return redirect(signup)   # will be changed----->error here
 
 @login_required
-def user_donations(request, id):
-    donations = Donation.objects.filter(user_id=id)
+def user_donations(request):
+    donations = Donation.objects.filter(user_id=request.session['user_id'])
     projects = Project.objects.all()
     donations_data = {'donations': donations, 'projects': projects}
     return render(request, 'users/user_donations.html', donations_data)
 
 @login_required    
-def user_projects(request, id):
-    projects = Project.objects.filter(user_id=id)
+def user_projects(request):
+    projects = Project.objects.filter(user_id=request.session['user_id'])
     categories = Category.objects.all()
     projects_data = {'categories': categories, 'projects': projects}
     return render(request, 'users/user_projects.html', projects_data)
 
-def delete_project(request, id, project_id):
+def delete_project(request, project_id):
     Project.objects.filter(pk=project_id).delete()
-    return redirect(user_projects, id)
+    return redirect(user_projects)
     
 @login_required
 def edit_project(request, id):
@@ -297,7 +303,7 @@ def edit_project(request, id):
     project_data = {'categories': categories, 'project': project}
     return render(request, 'users/edit_project.html', project_data)
     
-def update_project(request, id, project_id):
+def update_project(request, project_id):
     if request.method == "POST":
         title = request.POST['title']
         details = request.POST['details']
@@ -308,8 +314,10 @@ def update_project(request, id, project_id):
         category_id = request.POST['category']
         Project.objects.filter(pk=project_id).update(title=title, details=details, target=target, current=current, 
         start_date=start_date, end_date=end_date, category_id=category_id)
-    return redirect(user_projects, id)
+    return redirect(user_projects)
     
+
+
 
 def home(req):
     categories = Category.objects.all()

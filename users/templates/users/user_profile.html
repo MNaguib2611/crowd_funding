@@ -109,8 +109,8 @@
             <div class="col-3">
                 <div class="card operationCard">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item operationCardItem"><a href="{% url 'user_projects_url' user.id %}">view projects</a></li>
-                        <li class="list-group-item operationCardItem"><a href="{% url 'user_donations_url' user.id %}">view donations</a></li>
+                        <li class="list-group-item operationCardItem"><a href="{% url 'user_projects_url' %}">view projects</a></li>
+                        <li class="list-group-item operationCardItem"><a href="{% url 'user_donations_url' %}">view donations</a></li>
                         <li class="list-group-item deleteBtn" data-toggle="modal" data-target="#deleteAccount">delete account</li>
                     </ul>
                 </div>
@@ -196,7 +196,7 @@
                 </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% url 'edit_photo_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                    <form action="{% url 'edit_photo_url' %}" method="POST" enctype="multipart/form-data"> 
                         {% csrf_token %} 
                         {{ form.as_p }} 
                 </div>
@@ -221,7 +221,7 @@
                 </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% url 'edit_name_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                    <form action="{% url 'edit_name_url' %}" method="POST" enctype="multipart/form-data"> 
                         {% csrf_token %} 
                         <label>First Name</label>
                         <input type="text" name="first_name" class="form-control edited_value" value="{{ user.first_name }}" required/></br />
@@ -248,7 +248,7 @@
                 </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% url 'edit_birthdate_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                    <form action="{% url 'edit_birthdate_url' %}" method="POST" enctype="multipart/form-data"> 
                         {% csrf_token %} 
                         <label>Birthdate</label>
                         <input type="date" name="birth_date" class="form-control edited_value" value="{{ user.birth_date }}" required/></br />
@@ -274,7 +274,7 @@
                 </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% url 'edit_country_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                    <form action="{% url 'edit_country_url' %}" method="POST" enctype="multipart/form-data"> 
                         {% csrf_token %} 
                         <label>Country</label>
                         <input type="text" name="country" class="form-control edited_value" value="{{ user.country }}" required/></br />
@@ -301,7 +301,7 @@
                 </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% url 'edit_password_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                    <form action="{% url 'edit_password_url' %}" method="POST" enctype="multipart/form-data"> 
                         {% csrf_token %} 
                         <label>Password</label>
                         <input type="password" name="password" class="form-control edited_value" value="{{ user.password }}" required/></br />
@@ -329,7 +329,7 @@
                 </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% url 'edit_phone_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                    <form action="{% url 'edit_phone_url' %}" method="POST" enctype="multipart/form-data"> 
                         {% csrf_token %} 
                         <label>Phone</label>
                         <input type="tel" name="phone" class="form-control edited_value" value="{{ user.phone }}" pattern="(01)(0|1|2|5)[0-9]{8}" required> <br />
@@ -357,7 +357,7 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% url 'edit_fb_page_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                    <form action="{% url 'edit_fb_page_url' %}" method="POST" enctype="multipart/form-data"> 
                         {% csrf_token %} 
                         <label>FACEBOOK Page</label>
                         <input type="url" name="fb_page" class="form-control edited_value" value="{{ user.fb_page }}" required/></br />
@@ -382,7 +382,7 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% url 'delete_account_url' user.id %}" method="POST" enctype="multipart/form-data"> 
+                    <form action="{% url 'delete_account_url' %}" method="POST" enctype="multipart/form-data"> 
                         {% csrf_token %} 
                         <input type="checkbox" class="form-check-input" id="confirmDelete" style="margin-left: 6px;" required>
                         <label class="form-check-label" for="confirmDelete">your account will be deleted</label><br /><br />
