@@ -96,7 +96,7 @@
                                     <h6 class="align-middle title">PASSWORD</h6>   
                                 </div>
                                 <div class="col-6" >
-                                    <input type="password" name="pass" value="{{user.password}}" class="passBtn" />
+                                    <p> You can edit password </p>
                                 </div>
                                 <div class="col">
                                     <a href="#" data-toggle="modal" data-target="#editPassword">EDIT</a>  
@@ -306,7 +306,7 @@
                     <form action="{% url 'edit_password_url' %}" method="POST" enctype="multipart/form-data"> 
                         {% csrf_token %} 
                         <label>Password</label>
-                        <input type="password" name="password" class="form-control edited_value" value="{{ user.password }}" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required/></br />
+                        <input type="password" name="password" class="form-control edited_value" placeholder="New Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required/></br />
                         <small>Format: Must contain upperCase, lowerCase, Number and at least 8 characters </small><br>
                 </div>
                 <div class="modal-footer">

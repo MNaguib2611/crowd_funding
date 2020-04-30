@@ -1,5 +1,5 @@
 from django.core.files.storage import FileSystemStorage
-
+from django.contrib.auth import update_session_auth_hash
 from django.core.paginator import Paginator
 from django.db.models import Q, Avg
 from django.http import JsonResponse
@@ -243,6 +243,7 @@ def edit_password(request):
         user.set_password(password)
         # CustomUser.objects.filter(pk=id).update(password=password)
         user.save()
+        update_session_auth_hash(request, user)
     return redirect(view_user_profile)
     
 def edit_phone(request):
