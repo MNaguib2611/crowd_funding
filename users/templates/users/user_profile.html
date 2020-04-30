@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block links %}
+{% load static %}
     <link rel="stylesheet" href="/static/users/css/user_profile.css">
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/user_profile.css' %}"> -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
@@ -31,7 +33,7 @@
                                     <p> You can change photo </p>
                                 </div>
                                 <div class="col">
-                                    <img src="/static/images/{{user.picture}}" alt="profile-picture" data-toggle="modal" data-target="#editImg">
+                                    <img src="/static/images/{{user.picture}}" alt="profile-picture" data-toggle="modal" data-target="#editImg" width="100%">
                                 </div>
                             </div>
                         </button>

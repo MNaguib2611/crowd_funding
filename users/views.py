@@ -148,11 +148,15 @@ def signin(request):
                     email = request.POST['mail']
                     password =request.POST['pass']
                     user = auth.authenticate(email=email, password=password)
-                    print(user)
+                    user_data=CustomUser.objects.get(email=email)
+              
                     if user is not None:
                         auth.login(request, user)
                         request.session['user_id'] = user.id
                         return redirect('home')
+                    elif not user_data.is_active:
+                        messages.info(request, 'Please activate your email')
+                        return render(request, 'login.html')
                     else:
                         messages.info(request, 'Username OR Password is incorrect')
                         return render(request, 'login.html')
@@ -188,7 +192,9 @@ def home(request):
 
 @login_required
 def logOut(request):
-        return render(request,'logout.html')
+    for key in request.session.keys():
+        del request.session['user_id']    
+    return redirect('login')
 
 
 

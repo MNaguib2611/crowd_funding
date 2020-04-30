@@ -26627,8 +26627,6 @@ console.log("AAAAAAA")
       this.width = e, this.height = t, this.node.setAttribute("width", e), this.node.setAttribute("height", t)
     }, d.SVGCanvasElement.prototype.applyTransformParams = function (e, t, n) {
       this.scale = e, this.transX = t, this.transY = n, this.rootElement.node.setAttribute("transform", "scale(" + e + ") translate(" + t + ", " + n + ")")
-    }, d.SVGShapeElement = function (e, t) {
-      d.SVGShapeElement.parentClass.call(this, e, t), d.AbstractShapeElement.apply(this, arguments)
     }, d.inherits(d.SVGShapeElement, d.SVGElement), d.mixin(d.SVGShapeElement, d.AbstractShapeElement), d.SVGShapeElement.prototype.applyAttr = function (e, t) {
       var n, i, r = this;
       "fill" === e && d.isImageUrl(t) ? d.SVGShapeElement.images[t] ? this.applyAttr("fill", "url(#image" + d.SVGShapeElement.images[t] + ")") : d.whenImageLoaded(t).then(function (e) {
