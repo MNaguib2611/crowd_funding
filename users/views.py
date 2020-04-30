@@ -82,6 +82,26 @@ def delete_project(request, id, project_id):
     return redirect(user_projects, id)
     
 
+def edit_project(request, id):
+    project = Project.objects.filter(id=id)
+    project = project[0]
+    categories = Category.objects.all()
+    project_data = {'categories': categories, 'project': project}
+    return render(request, 'users/edit_project.html', project_data)
+    
+def update_project(request, id, project_id):
+    title = request.POST['title']
+    details = request.POST['details']
+    target = request.POST['target']
+    current = request.POST['current']
+    start_date = request.POST['start_date']
+    end_date = request.POST['end_date']
+    category_id = request.POST['category']
+    Project.objects.filter(pk=project_id).update(title=title, details=details, target=target, current=current, 
+    start_date=start_date, end_date=end_date, category_id=category_id)
+    return redirect(user_projects, id)
+    
+
 def home(req):
     categories = Category.objects.all()
 

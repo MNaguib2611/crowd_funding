@@ -22,8 +22,8 @@ class Project (models.Model):
     target   = models.IntegerField()
     current  = models.IntegerField()
     featured = models.BooleanField()
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    start_date = models.DateField()
+    end_date = models.DateField()
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

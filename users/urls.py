@@ -2,11 +2,13 @@ from django.urls import path
 # from .views import view_user_profile, edit_name
 from users.views import view_user_profile, edit_name, edit_birthdate, edit_country, edit_password, edit_phone, edit_fb_page, edit_photo, delete_account, user_donations,user_projects,delete_project,landing
 
-from users.views import home,donate, report_comment,report_project, search 
+from users.views import home,donate, report_comment,report_project, search,  update_project, edit_project
 
 urlpatterns = [
     path('', landing, name="landing_page"),
     path('delete_project/<int:id> <int:project_id>', delete_project, name="delete_project_url"),
+    path('edit_project/<int:id>', edit_project, name="edit_project_url"),
+    path('update_project/<int:id> <int:project_id>', update_project, name="update_project_url"),
     path('<int:id>', view_user_profile,name='view_user_profile'),
     path('edit_photo/<int:id>', edit_photo, name="edit_photo_url"),
     path('edit_name/<int:id>', edit_name, name="edit_name_url"),
