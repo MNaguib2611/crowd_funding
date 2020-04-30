@@ -1,10 +1,5 @@
-from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
-from django.http import JsonResponse
-from .models import CustomUser
-from projects.models import Donation
-from projects.models import Project
-from categories.models import Category
+
 from django.core.paginator import Paginator
 from django.db.models import Q, Avg
 from django.http import JsonResponse
@@ -12,27 +7,20 @@ from django.shortcuts import render, redirect
 
 from django.views.generic import View
 from django.contrib import messages
-# from validate_email import validate_email
-#from django.contrib.auth.models  import User, auth
-from django.contrib.auth import get_user_model
-from django.contrib.auth.forms  import UserCreationForm
+
 from  .models import CustomUser
-from django.http.response import HttpResponse
-from django.core.validators import validate_email
+
 from django.contrib.auth import get_user_model
 User = get_user_model()
 from django.contrib.auth.models import auth
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django .utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
+
 from .utils import generate_token 
 from django.core.mail import EmailMessage 
 from django.conf import  settings
-from django.contrib.auth import authenticate, login, logout
-from .forms import EditImgForm  
+from .forms import EditImgForm
 from datetime import datetime , timedelta
 from django.utils import timezone
 
@@ -318,24 +306,25 @@ def update_project(request, project_id):
     
 @login_required
 def home(req):
+    user_id = req.session['user_id']
     categories = Category.objects.all()
 
-    latest_projects = project_is_reported(Project.objects.all().order_by('-start_date')[:5])
+    latest_projects = project_is_reported(Project.objects.all().order_by('-start_date')[:5],user_id)
     paginator_latest_projects = Paginator(latest_projects, 3)  # Show 25 contacts per page.
     page_number_latest_projects = req.GET.get('page_lat_pro')
     page_obj_latest_projects = paginator_latest_projects.get_page(page_number_latest_projects)
 
-    projects_by_category = project_is_reported(get_projects_by_category(req.GET.get('cat_id')))
+    projects_by_category = project_is_reported(get_projects_by_category(req.GET.get('cat_id')),user_id)
     paginator_category = Paginator(projects_by_category, 3)  # Show 25 contacts per page.
     page_number = req.GET.get('page_cat')
     page_obj = paginator_category.get_page(page_number)
 
-    latest_featured_projects = project_is_reported(Project.objects.filter(featured=1).order_by('-start_date')[:5])
+    latest_featured_projects = project_is_reported(Project.objects.filter(featured=1).order_by('-start_date')[:5],user_id)
     paginator_latest_featured_projects = Paginator(latest_featured_projects, 3)  # Show 25 contacts per page.
     page_number_latest_featured_projects = req.GET.get('page_latest_featured_project')
     page_obj_latest_featured_projects = paginator_latest_featured_projects.get_page(page_number_latest_featured_projects)
 
-    highest_rated_projects = project_is_reported(Project.objects.filter(end_date__gt=datetime.now()).annotate(rate_avg=Avg('rate__rate')).order_by('-rate_avg')[:5])
+    highest_rated_projects = project_is_reported(Project.objects.filter(end_date__gt=datetime.now()).annotate(rate_avg=Avg('rate__rate')).order_by('-rate_avg')[:5],user_id)
     print(highest_rated_projects)
     paginator_highest_rated_projects = Paginator(highest_rated_projects, 3)  # Show 25 contacts per page.
     page_number_highest_rated_projects = req.GET.get('page_highest_rated_projects')

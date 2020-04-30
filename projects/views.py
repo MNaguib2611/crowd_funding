@@ -15,7 +15,8 @@ import time
 
 @login_required
 def index(req):
-    projects = project_is_reported(Project.objects.all())
+    user_id = req.session['user_id']
+    projects = project_is_reported(Project.objects.all(),user_id)
     context = {
         'projects':projects
     }
