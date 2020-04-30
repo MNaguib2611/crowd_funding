@@ -1,5 +1,5 @@
 from django.core.files.storage import FileSystemStorage
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, logout
 from django.core.paginator import Paginator
 from django.db.models import Q, Avg
 from django.http import JsonResponse
@@ -192,9 +192,8 @@ def home(request):
 
 @login_required
 def logOut(request):
-    for key in request.session.keys():
-        del request.session['user_id']    
-    return redirect('login')
+    logout(request)
+    return render(request,'login.html')
 
 
 
@@ -202,7 +201,7 @@ def logOut(request):
 ##################################################################################
 @login_required
 def view_user_profile(request):
-    user = CustomUser.objects.filter(id=request.session['user_id'])
+    user = CustomUser.objects.filter(id=request.user.id)
     user = user[0]
     form = EditImgForm()
     user_data = {'user': user, 'form': form}
@@ -217,33 +216,33 @@ def edit_photo(request):
             filename = fs.save(picture.name, picture)
             uploaded_file_url = fs.url(filename)
             photo = uploaded_file_url
-            CustomUser.objects.filter(pk=request.session['user_id']).update(picture=photo)
+            CustomUser.objects.filter(pk=request.user.id).update(picture=photo)
     return redirect(view_user_profile)
     
 def edit_name(request):
     if request.method == "POST":
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
-        CustomUser.objects.filter(pk=request.session['user_id']).update(first_name=first_name, last_name=last_name)
+        CustomUser.objects.filter(pk=request.user.id).update(first_name=first_name, last_name=last_name)
     return redirect(view_user_profile)
     
 def edit_birthdate(request):
     if request.method == "POST":
         birth_date = request.POST['birth_date']
-        CustomUser.objects.filter(pk=request.session['user_id']).update(birth_date=birth_date)
+        CustomUser.objects.filter(pk=request.user.id).update(birth_date=birth_date)
     return redirect(view_user_profile)
     
 
 def edit_country(request):
     if request.method == "POST":
         country = request.POST['country']
-        CustomUser.objects.filter(pk=request.session['user_id']).update(country=country)
+        CustomUser.objects.filter(pk=request.user.id).update(country=country)
     return redirect(view_user_profile)
     
 
 def edit_password(request):
     if request.method == "POST":
-        user = CustomUser.objects.filter(id=request.session['user_id'])
+        user = CustomUser.objects.filter(id=request.user.id)
         user = user[0]
         password = request.POST['password']
         user.set_password(password)
@@ -255,13 +254,13 @@ def edit_password(request):
 def edit_phone(request):
     if request.method == "POST":
         phone = request.POST['phone']
-        CustomUser.objects.filter(pk=request.session['user_id']).update(phone=phone)
+        CustomUser.objects.filter(pk=request.user.id).update(phone=phone)
     return redirect(view_user_profile)
     
 def edit_fb_page(request):
     if request.method == "POST":
         fb_page = request.POST['fb_page']
-        CustomUser.objects.filter(pk=request.session['user_id']).update(fb_page=fb_page)
+        CustomUser.objects.filter(pk=request.user.id).update(fb_page=fb_page)
     return redirect(view_user_profile)
 
 def delete_account(request):
@@ -269,19 +268,19 @@ def delete_account(request):
     # user = user[0]
     # if user.password == request.POST['pass']:   # will be changed and use ajax when using password to delete           
     if request.method == "POST":
-        CustomUser.objects.filter(pk=request.session['user_id']).delete()     
+        CustomUser.objects.filter(pk=request.user.id).delete()
     return redirect(signup)   # will be changed----->error here
 
 @login_required
 def user_donations(request):
-    donations = Donation.objects.filter(user_id=request.session['user_id'])
+    donations = Donation.objects.filter(user_id=request.user.id)
     projects = Project.objects.all()
     donations_data = {'donations': donations, 'projects': projects}
     return render(request, 'users/user_donations.html', donations_data)
 
 @login_required    
 def user_projects(request):
-    projects = Project.objects.filter(user_id=request.session['user_id'])
+    projects = Project.objects.filter(user_id=request.user.id)
     categories = Category.objects.all()
     projects_data = {'categories': categories, 'projects': projects}
     return render(request, 'users/user_projects.html', projects_data)
@@ -313,7 +312,8 @@ def update_project(request, project_id):
     
 @login_required
 def home(req):
-    user_id = req.session['user_id']
+    print(req.user.id,"EEEEEEEEEEEEEE")
+    user_id = req.user.id
     categories = Category.objects.all()
 
     latest_projects = project_is_reported(Project.objects.all().order_by('-start_date')[:5],user_id)
@@ -369,7 +369,7 @@ def get_projects_by_category(id):
     # return JsonResponse(data)
 
 def donate(req):
-    user_id = req.session['user_id']
+    user_id = req.user.id
     amount = int(req.POST.get('donation-val'))
     project_id=int(req.POST.get('project_id'))
     user_id=user_id
@@ -384,7 +384,7 @@ def donate(req):
 
 
 def report_project(req,id):
-    user_id = req.session['user_id']
+    user_id = req.user.id
     project_id=id
     report = Report(user_id=user_id,project_id=project_id)
     report.save()
@@ -392,7 +392,7 @@ def report_project(req,id):
     return redirect(req.META.get('HTTP_REFERER'))
 
 def report_comment(req,project_id,comment_id):
-    user_id = req.session['user_id']
+    user_id = req.user.id
     report = Report(user_id=user_id,project_id=project_id,comment_id=comment_id)
     report.save()
 

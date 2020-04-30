@@ -28,7 +28,7 @@
                             data-project_id="{{ project.id }}"
                             data-target-donation="{{ project.target }}"
                             data-current-donation="{{ project.current }}"
-                            data-target="#donate-model" {% if project.target == project.current %}
+                            data-target="#donate-model" {% if project.target == project.current or project.is_reported %}
                         {{ "disabled" }} {% endif %}>Donate
                     </button>
                     <a href="{% url 'report_project' project.id %}">

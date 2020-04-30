@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from utils.utils import project_is_reported ,comment_is_reported
 from .models import Project, Report, Picture, Tag, Reply,Donation,Rate,Comment
 from django.db.models import Avg
+from django.db.models import Count
 from categories.models import Category
 from projects.models import Report, Comment
 from datetime import datetime
@@ -136,10 +137,19 @@ def admin_reported_projects(request):
     context = {'projects':projects}
     return render(request, 'projects/admin/reported_projects.html', context )
     
+# def admin_delete_reported_projects(request, id):
+    # # project = Project.objects.get(pk=id)
+    # # project.delete()
+    # return redirect('/admin/projects/reported_project')
 def admin_delete_reported_projects(request, id):
     project = Project.objects.get(pk=id)
-    project.delete()
-
+    # print(project.id)
+    project_donations,created=Donation.objects.get_or_create(project=project,amount=0)
+    # print(project_donations)
+    project_donation=Donation.objects.filter(project=id)
+    if (project_donation):
+        project_donation.delete()
+        project.delete()
     return redirect('/admin/projects/reported_project')
 
 def admin_delete_projects(request, id):
