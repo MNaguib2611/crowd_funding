@@ -540,7 +540,7 @@
                                 </i>
                                 Create Project
                             </a>
-                            <a href="{% url 'user_projects_url' 1 %}">
+                            <a href="{% url 'user_projects_url' user.id %}">
                                 <i class="fas fa-funnel-dollar"></i>
                                 </i>
                                 My Projects
@@ -548,14 +548,14 @@
                         </li>
                         <li class="app-sidebar__heading">Profile</li>
                         <li>
-                            <a href="{% url 'view_user_profile' 1  %}">
+                            <a href="{% url 'view_user_profile' user.id  %}">
                                 <i class="fas fa-id-badge"></i>
                                 My Profile
                             </a>
                         </li>
                         <li class="app-sidebar__heading">donations</li>
                         <li>
-                            <a href="{% url 'user_donations_url' 1 %}">
+                            <a href="{% url 'user_donations_url' user.id %}">
                                 <i class="fas fa-hand-holding-usd"></i>
                                 My Donations
                             </a>

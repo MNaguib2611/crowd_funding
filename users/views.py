@@ -356,9 +356,10 @@ def get_projects_by_category(id):
     # return JsonResponse(data)
 
 def donate(req):
+    user_id = req.session['user_id']
     amount = int(req.POST.get('donation-val'))
     project_id=int(req.POST.get('project_id'))
-    user_id=1
+    user_id=user_id
     print(amount,project_id)
     project = Project.objects.get(id=project_id)
     if project.target - project.current >= amount:
@@ -370,7 +371,7 @@ def donate(req):
 
 
 def report_project(req,id):
-    user_id = 1
+    user_id = req.session['user_id']
     project_id=id
     report = Report(user_id=user_id,project_id=project_id)
     report.save()
@@ -378,7 +379,7 @@ def report_project(req,id):
     return redirect(req.META.get('HTTP_REFERER'))
 
 def report_comment(req,project_id,comment_id):
-    user_id = 1
+    user_id = req.session['user_id']
     report = Report(user_id=user_id,project_id=project_id,comment_id=comment_id)
     report.save()
 
