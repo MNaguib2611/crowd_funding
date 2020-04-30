@@ -42,9 +42,7 @@ from categories.models import Category
 from projects.models import Project, Donation, Report, Tag
 from utils.utils import project_is_reported
 import re
-
-
-
+from django.contrib.auth.decorators import login_required
 
 def email_validator(email):
     if len(email) > 7:
@@ -165,6 +163,7 @@ def signin(request):
                     print(user)
                     if user is not None:
                         auth.login(request, user)
+                        request.session['user_id'] = user.id
                         return redirect('home')
                     else:
                         messages.info(request, 'Username OR Password is incorrect')
@@ -195,9 +194,11 @@ class ActivateAccountView(View):
         return render(request,'activate_failed.html')
 
 ##########################Home Page#############################################
+@login_required
 def home(request):
         return render(request,'home.html')
 
+@login_required
 def logOut(request):
         return render(request,'logout.html')
 
@@ -205,6 +206,7 @@ def logOut(request):
 
 
 ##################################################################################
+@login_required
 def view_user_profile(request, id):
     user = CustomUser.objects.filter(id=id)
     user = user[0]
@@ -269,12 +271,14 @@ def delete_account(request, id):
         CustomUser.objects.filter(pk=id).delete()     
     return redirect(signup)   # will be changed----->error here
 
+@login_required
 def user_donations(request, id):
     donations = Donation.objects.filter(user_id=id)
     projects = Project.objects.all()
     donations_data = {'donations': donations, 'projects': projects}
     return render(request, 'users/user_donations.html', donations_data)
-    
+
+@login_required    
 def user_projects(request, id):
     projects = Project.objects.filter(user_id=id)
     categories = Category.objects.all()
@@ -285,7 +289,7 @@ def delete_project(request, id, project_id):
     Project.objects.filter(pk=project_id).delete()
     return redirect(user_projects, id)
     
-
+@login_required
 def edit_project(request, id):
     project = Project.objects.filter(id=id)
     project = project[0]
@@ -363,9 +367,10 @@ def get_projects_by_category(id):
     # return JsonResponse(data)
 
 def donate(req):
+    user_id = req.session['user_id']
     amount = int(req.POST.get('donation-val'))
     project_id=int(req.POST.get('project_id'))
-    user_id=1
+    user_id=user_id
     print(amount,project_id)
     project = Project.objects.get(id=project_id)
     if project.target - project.current >= amount:
@@ -377,7 +382,7 @@ def donate(req):
 
 
 def report_project(req,id):
-    user_id = 1
+    user_id = req.session['user_id']
     project_id=id
     report = Report(user_id=user_id,project_id=project_id)
     report.save()
@@ -385,7 +390,7 @@ def report_project(req,id):
     return redirect(req.META.get('HTTP_REFERER'))
 
 def report_comment(req,project_id,comment_id):
-    user_id = 1
+    user_id = req.session['user_id']
     report = Report(user_id=user_id,project_id=project_id,comment_id=comment_id)
     report.save()
 
@@ -398,4 +403,4 @@ def search(req):
     return JsonResponse(list(projects),safe=False)
 
 def landing(request):
-    return redirect('/users/home')
+    return redirect('/home')

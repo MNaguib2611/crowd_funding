@@ -1,26 +1,30 @@
+from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from utils.utils import project_is_reported ,comment_is_reported
 from .models import Project, Report, Picture, Tag, Reply,Donation,Rate,Comment
 from django.db.models import Avg
 from categories.models import Category
-from users.models import CustomUser
 from projects.models import Report, Comment
 from datetime import datetime
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 import math
-import json
 import time
 
+@login_required
 def index(req):
     projects = project_is_reported(Project.objects.all())
     context = {
         'projects':projects
     }
     return render(req, 'projects/index.html', context)
+
+@login_required
 def launch_project(request):
-    user_id=1 #will be replaced by logged user
+    # print(request.session['user_id'],"AAAA")
+    user_id=request.session['user_id'] #will be replaced by logged user
 
     if request.method.lower() == "get":
         categories= Category.objects.filter()
@@ -65,6 +69,7 @@ def launch_project(request):
                        
                         for picture in request.FILES.getlist("picture[]",None):
                             if picture is not None and picture != '':
+                                from django.core.files.storage import FileSystemStorage
                                 fs = FileSystemStorage(location='projects/static/images')
                                 filename = fs.save(picture.name, picture)
                                 uploaded_file_url = fs.url(filename)
@@ -83,6 +88,7 @@ def launch_project(request):
                 
 
                     except IntegrityError as e:
+                        print(e)
                         msg = 'project already added!'
                         alert = 'danger'
 
@@ -98,14 +104,15 @@ def launch_project(request):
         } 
         return render(request,"projects/launch_project.html",context) 
 
-
+@login_required
 def admin_projects(request):
     projects = Project.objects.all()
 
     return render(request, 'projects/admin/all.html', {'projects':projects})
 
+@login_required
 def admin_reported_projects(request):
-    user_id=1
+    user_id=request.session['user_id']
     projects=[]
     distinct = Report.objects.values(
     'project_id'
@@ -139,6 +146,7 @@ def admin_delete_projects(request, id):
     project.delete()
     return redirect('/admin/projects/')
 
+@login_required
 def project_featured(request, id):
     project = Project.objects.get(pk=id)
     if(project.featured == 1):
@@ -151,18 +159,19 @@ def project_featured(request, id):
 
     return JsonResponse({'status':200})
 
-def show(req,project_id):
-    user_id=1 #will be replaced by logged user
+@login_required
+def show(request,project_id):
+    user_id=request.session['user_id'] #will be replaced by logged user
     project_data  = Project.objects.get(id=project_id)
     pictures_data = Picture.objects.filter(project_id=project_id)
-    is_reported=Report.objects.filter(project_id=project_id,user_id=1);
+    is_reported=Report.objects.filter(project_id=project_id,user_id=user_id);
     comments = comment_is_reported(Comment.objects.filter(project_id=project_id))
     tags=project_data.tag_set.filter(project_id=project_id).values('tag')
     project_ids=Tag.objects.filter(tag__in=tags).exclude(project_id =project_id).values('project_id')
     print(project_ids)
     projects = Project.objects.filter(id__in=project_ids)[0:5]
     try:
-        user_rate = Rate.objects.get(project_id=project_id,user_id=1)
+        user_rate = Rate.objects.get(project_id=project_id,user_id=user_id)
         user_rate_val=f"you rated this project { user_rate }"
     except Rate.DoesNotExist:
         user_rate = None
@@ -189,24 +198,25 @@ def show(req,project_id):
         'rating_f' : int( ( avg_rating-int(avg_rating) )*10 ),
         'rating_i' : range(int(avg_rating)),
         }
-    return render(req, 'projects/show.html', context)
+    return render(request, 'projects/show.html', context)
 
 def comment(req):
-    user_id=1
+    user_id=req.session['user_id']
     new_comment=Comment(
                 comment=req.POST['comment'],
                 project_id=req.POST['project_id'],
-                user_id=1
+                user_id=user_id
                 )
     new_comment.save()            
     return redirect(f"/projects/{req.POST['project_id'] }" )            
 
 def reply(req):
-    user_id=1
+    user_id = req.session['user_id']
+    user_id=user_id
     new_reply=Reply(
                 reply=req.POST['reply'],
                 comment_id=req.POST['comment_id'],
-                user_id=1
+                user_id=user_id
                 )
     new_reply.save()  
     print (new_reply.comment)
@@ -215,8 +225,9 @@ def reply(req):
 
 
 def rate(req,project_id):
+    user_id = req.session['user_id']
     try:
-        rate_exists = Rate.objects.get(project_id=project_id,user_id=1)
+        rate_exists = Rate.objects.get(project_id=project_id,user_id=user_id)
     except Rate.DoesNotExist:
         rate_exists = None
     if rate_exists:
@@ -224,10 +235,11 @@ def rate(req,project_id):
         rate_exists.save()
         response_message=["Rate has been updated"]
     else:
-        new_rate = Rate(project_id=project_id,user_id=1,rate=req.GET['rate_val'])
+        new_rate = Rate(project_id=project_id,user_id=user_id,rate=req.GET['rate_val'])
         new_rate.save()
     return redirect(f"/projects/{project_id}" )  
 
+@login_required
 def all_reported_comments(request):
     all_reports = Report.objects.exclude(comment_id=None)
     reports = [all_reports.filter(comment_id=item['comment_id']).last() for item in Report.objects.values('comment_id').distinct()]
