@@ -193,7 +193,8 @@ def home(request):
 @login_required
 def logOut(request):
     logout(request)
-    return render(request,'login.html')
+    return redirect('login')
+    # return render(request,'login.html')
 
 
 
