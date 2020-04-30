@@ -19,7 +19,6 @@ from django.urls import path, include
 urlpatterns = [
     path('projects/', include('projects.urls')),
     path('', include('users.urls')),
-    path('users/', include('users.urls')),
 
     # Admin routes
     path('admin/', include('crowd_funding.admin_urls')),

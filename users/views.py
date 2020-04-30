@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from .models import CustomUser
 from projects.models import Donation
@@ -8,15 +9,203 @@ from django.core.paginator import Paginator
 from django.db.models import Q, Avg
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from .forms import EditImgForm
-from datetime import datetime
+
+from django.views.generic import View
+from django.contrib import messages
+# from validate_email import validate_email
+#from django.contrib.auth.models  import User, auth
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms  import UserCreationForm
+from  .models import CustomUser
+from django.http.response import HttpResponse
+from django.core.validators import validate_email
+from django.contrib.auth import get_user_model
+User = get_user_model()
+from django.contrib.auth.models import auth
+
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django .utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from .utils import generate_token 
+from django.core.mail import EmailMessage 
+from django.conf import  settings
+from django.contrib.auth import authenticate, login, logout
+from .forms import EditImgForm  
+from datetime import datetime , timedelta
+from django.utils import timezone
 
 
-# Create your views here.
+
 from categories.models import Category
 from projects.models import Project, Donation, Report, Tag
 from utils.utils import project_is_reported
+import re
 
+
+
+
+def email_validator(email):
+    if len(email) > 7:
+        if re.match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$", email) is not None:
+            return True
+    return False
+
+def phone_number_validator(phoneNumber):
+    if len(phoneNumber) > 7:
+        if re.match("(01)[0-9]{9}", phoneNumber) is not None:
+           return True
+    return None
+
+def validate_names(fname,lname):
+
+    if fname.isalpha():
+        if fname.isalpha():
+            return True
+    return None
+
+def validate_password(password):
+    if re.match("(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$", password):
+        return  True
+    return None
+
+
+
+def signup(request):
+    context={
+        'data' : request.POST,
+        'has error': False
+       }
+    if request.method == 'POST':
+        first_name = request.POST['fname']
+        last_name = request.POST['lname']
+        picture = request.POST['pic']
+        email = request.POST['mail'] 
+        password = request.POST['pass'] 
+        password2 = request.POST['conf'] 
+        phone = request.POST['phone']
+
+        if not validate_names(first_name,last_name):
+            messages.add_message(request,messages.ERROR,'please Insert valid Name')
+            context['has error'] = True
+
+
+        
+        if not email_validator(email):
+            messages.add_message(request,messages.ERROR,'please Insert valid Email')
+            context['has error'] = True
+
+        if not phone_number_validator(phone):
+            messages.add_message(request,messages.ERROR,'please Insert valid phone Number')
+            context['has error'] = True
+         
+        if password != password2:
+            messages.add_message(request,messages.ERROR,'Passwords donot match')
+            context['has error'] = True
+        
+
+        if not validate_password(password):
+            messages.add_message(request,messages.ERROR,'Passwords will contain at least 1 upper case letter,Passwords will contain at least 1 lower case letter , Passwords will contain at least 1 number or special character , Passwords will contain at least 8 characters in length ,Password maximum length should not be arbitrarily limited')
+            context['has error'] = True
+
+        
+
+
+        if not first_name and not last_name and not email and not password and not password2 and not phone:   
+           messages.add_message(request,messages.ERROR,'Fields Cannot be blank ') 
+        
+        
+        if context['has error']:
+               return render(request,'register.html', context)
+
+        user = User.objects.create_user(password = password, email = email, first_name = first_name, last_name = last_name, phone = phone, picture = picture)
+        user.is_active=False
+        user_token=generate_token.make_token(user)
+        user.token=user_token
+        user.save()
+        current_site=get_current_site(request)
+        email_subject='Activate your Account',
+        message=render_to_string('activate.html', 
+        {
+            'user':user,
+            'domain':current_site.domain,
+            'uid': user.pk,
+            'token':user_token
+        })
+       
+        email_message = EmailMessage(
+           email_subject,
+           message,
+           settings.EMAIL_HOST_USER,
+           [email] 
+        )
+        email_message.send()
+        messages.add_message(request,messages.SUCCESS,'Account Created Successfully')
+        messages.add_message(request,messages.SUCCESS,'please Activate your Account an Email sent fo Activation')
+        print("user Created Successfully") 
+        
+        # return render(request,'login.html', context) 
+        return redirect('login')
+    else:            
+        return render(request,'register.html', context)  
+ 
+   
+#######################SignningIN#############################################
+
+
+def signin(request):
+   if request.user.is_authenticated:
+           return redirect('home')
+   else:
+              if request.method == 'POST':
+                    email = request.POST['mail']
+                    password =request.POST['pass']
+                    user = auth.authenticate(email=email, password=password)
+                    print(user)
+                    if user is not None:
+                        auth.login(request, user)
+                        request.session['user_id'] = user.id
+                        return redirect('home')
+                    else:
+                        messages.info(request, 'Username OR Password is incorrect')
+                        return render(request, 'login.html')
+                        
+              else:
+                    return render(request, 'login.html')
+            #   if request.user.is_authenticated:
+            #       return redirect('home')
+                    
+
+ #####################Activation##############################################     
+class ActivateAccountView(View):
+    def get(self,request,uidb64,token):
+        user=User.objects.get(pk=uidb64)
+       
+           
+        if user and (user.token==token):
+            past = timezone.now() - timedelta(days=1)            
+            if user.token_date >past:
+                user.is_active=True
+                user.save()
+                messages.add_message(request,messages.SUCCESS,'account activated successfully')
+                return redirect('login')
+            else:
+              messages.info(request, 'Token expired,please request a new token')
+              return render(request, 'login.html')  
+        return render(request,'activate_failed.html')
+
+##########################Home Page#############################################
+def home(request):
+        return render(request,'home.html')
+
+def logOut(request):
+        return render(request,'logout.html')
+
+
+
+
+##################################################################################
 def view_user_profile(request, id):
     user = CustomUser.objects.filter(id=id)
     user = user[0]
@@ -25,6 +214,15 @@ def view_user_profile(request, id):
     return render(request, 'users/user_profile.html', user_data)
 
 def edit_photo(request, id):
+    if request.method == "POST":
+        if request.FILES['picture']:
+            folder = 'users/static/images'
+            picture = request.FILES['picture']
+            fs = FileSystemStorage(location=folder)
+            filename = fs.save(picture.name, picture)
+            uploaded_file_url = fs.url(filename)
+            photo = uploaded_file_url
+            CustomUser.objects.filter(pk=id).update(picture=photo)
     return redirect(view_user_profile, id)
     
 def edit_name(request, id):
@@ -63,7 +261,7 @@ def delete_account(request, id):
     # user = user[0]
     # if user.password == request.POST['pass']:   # will be changed and use ajax when using password to delete           
     CustomUser.objects.filter(pk=id).delete()     
-    return redirect(view_user_profile, id)   # will be changed----->error here
+    return redirect(signup)   # will be changed----->error here
 
 def user_donations(request, id):
     donations = Donation.objects.filter(user_id=id)
@@ -79,6 +277,26 @@ def user_projects(request, id):
 
 def delete_project(request, id, project_id):
     Project.objects.filter(pk=project_id).delete()
+    return redirect(user_projects, id)
+    
+
+def edit_project(request, id):
+    project = Project.objects.filter(id=id)
+    project = project[0]
+    categories = Category.objects.all()
+    project_data = {'categories': categories, 'project': project}
+    return render(request, 'users/edit_project.html', project_data)
+    
+def update_project(request, id, project_id):
+    title = request.POST['title']
+    details = request.POST['details']
+    target = request.POST['target']
+    current = request.POST['current']
+    start_date = request.POST['start_date']
+    end_date = request.POST['end_date']
+    category_id = request.POST['category']
+    Project.objects.filter(pk=project_id).update(title=title, details=details, target=target, current=current, 
+    start_date=start_date, end_date=end_date, category_id=category_id)
     return redirect(user_projects, id)
     
 

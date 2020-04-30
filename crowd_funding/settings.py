@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-
+from django.contrib import messages 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -24,7 +24,7 @@ SECRET_KEY = 'p@s-5bflh2asnqel1br+xa9d88t9n04e^jn1=zo1@8e222l+i8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0","127.0.0.1"]
 
 # Application definition
 
@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "django_static_fontawesome",
     'bootstrap4',
     'mathfilters',
-      'django.contrib.humanize',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -83,14 +83,13 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'crowd_funding',
         'USER': 'root',
-        # 'PASSWORD': 'ITIintake40',
         'PASSWORD': '',
-        'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
-        # 'PORT': '3306',
+        'HOST': 'localhost', 
+        'PORT': '3306',
         "OPTIONS": {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 
-            # "unix_socket": "/tmp/mysql-dev.sock",
+        #     # "unix_socket": "/tmp/mysql-dev.sock",
             'unix_socket': '/opt/lampp/var/mysql/mysql.sock',
         }
     }
@@ -134,3 +133,23 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'users.CustomUser'
+
+
+STATICFILES_DIRS=[
+    os.path.join(BASE_DIR, 'static')
+]
+
+EMAIL_HOST=os.environ.get('EMAIL_HOST')
+EMAIL_HOST_USER=os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS=os.environ.get('EMAIL_USE_TLS')
+EMAIL_PORT=os.environ.get('EMAIL_PORT')
+
+
+
+
+
+
+MESSAGE_TAGS={
+    messages.ERROR:'danger'
+}

@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from utils.utils import project_is_reported ,comment_is_reported
@@ -19,9 +20,9 @@ def index(req):
         'projects':projects
     }
     return render(req, 'projects/index.html', context)
-
 def launch_project(request):
-    user_id=1 #will be replaced by logged user
+    print(request.session['user_id'],"AAAA")
+    user_id=request.session['user_id'] #will be replaced by logged user
 
     if request.method.lower() == "get":
         categories= Category.objects.filter()
@@ -57,16 +58,19 @@ def launch_project(request):
                         print (cat)
                         # user=User.objects.get(pk=1)
 
-                        # if end_date < start_date:
-                            # raise ValidationError("End date should be greater than start date.")
                         msg = 'New project added successfully'
                         alert = 'success'
                         project_instance=Project.objects.create(featured=0,end_date=end_date,start_date=start_date,
                         title=title,details=details,target=target,current=current
                         ,category=cat,user_id=user_id
                         )
+                       
                         for picture in request.FILES.getlist("picture[]",None):
                             if picture is not None and picture != '':
+                                from django.core.files.storage import FileSystemStorage
+                                fs = FileSystemStorage(location='projects/static/images')
+                                filename = fs.save(picture.name, picture)
+                                uploaded_file_url = fs.url(filename)
                                 picture_instance=Picture.objects.create(picture=picture,project=project_instance)
                         
                         searchForValue = ','
@@ -75,12 +79,14 @@ def launch_project(request):
                             if searchForValue in tag:
                                 tags=tag.split(',')
                                 for tag in tags:
-                                    tag_instance=Tag.objects.create(tag=tag,project=project_instance)       
+                                    if tag is not None and tag != '':
+                                        tag_instance=Tag.objects.create(tag=tag,project=project_instance)       
                             else:    
                                 tag_instance=Tag.objects.create(tag=tag,project=project_instance)
                 
 
                     except IntegrityError as e:
+                        print(e)
                         msg = 'project already added!'
                         alert = 'danger'
 
@@ -92,11 +98,7 @@ def launch_project(request):
         projects= Project.objects.filter()
         categories= Category.objects.filter()
         context={"projects":projects,"categories":categories,"msg": msg, "alert": alert,
-        # 'formset': formset,
-        # 'title': request.POST.get ('title', ''),
-        # 'details': request.POST.get ('details', ''),
-        # 'target': request.POST.get ('target', ''),
-        # 'current': request.POST.get ('current', '')
+     
         } 
         return render(request,"projects/launch_project.html",context) 
 
@@ -107,12 +109,26 @@ def admin_projects(request):
     return render(request, 'projects/admin/all.html', {'projects':projects})
 
 def admin_reported_projects(request):
- 
+    user_id=1
     projects=[]
-    reported_projects = Report.objects.all()   
-    for reported_project in reported_projects:
-        projects += Project.objects.all().filter(id=reported_project.project_id)
+    distinct = Report.objects.values(
+    'project_id'
+    ).annotate(
+        name_count=Count('project_id')
+    )
+    # print(distinct)
 
+    not_commented=distinct.filter(comment_id__isnull = True)
+    # print(not_commented)
+
+    if Report.objects.filter(comment_id__isnull = True) :
+        projects = Project.objects.filter(id__in=[item['project_id'] for item in not_commented ])
+        # print(projects)
+    # reported_projects = Report.objects.distinct()
+    # for reported_project in reported_projects:
+    #     if reported_project.comment_id == None :
+    #         projects += Project.objects.filter(id=reported_project.project_id)
+            
     context = {'projects':projects}
     return render(request, 'projects/admin/reported_projects.html', context )
     
@@ -219,7 +235,6 @@ def rate(req,project_id):
 def all_reported_comments(request):
     all_reports = Report.objects.exclude(comment_id=None)
     reports = [all_reports.filter(comment_id=item['comment_id']).last() for item in Report.objects.values('comment_id').distinct()]
-    print(reports[0])
     return render(request, 'projects/admin/reported_comments.html', {'reports': reports} )
 
 def delete_comment(request, id):
