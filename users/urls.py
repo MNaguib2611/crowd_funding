@@ -3,11 +3,7 @@ from . import views
 # from users.views import home,donate, report_project,signin,signup,logOut , report_comment,report_project, search 
 from users.views import view_user_profile, edit_name, edit_birthdate, edit_country, edit_password, edit_phone, edit_fb_page, edit_photo, delete_account, user_donations,user_projects,delete_project,landing,home,donate, report_project,signin,signup,logOut, search,report_comment
 
-<<<<<<< HEAD
-from users.views import home,donate, report_comment,report_project, search,  update_project, edit_project
-=======
-from . import views
->>>>>>> 50aa731fc63aafd34bc6664efd0fbdd637421cb0
+from users.views import home,donate, report_comment,report_project, search, update_project, edit_project
 
 urlpatterns = [
     path('', landing, name="landing_page"),
