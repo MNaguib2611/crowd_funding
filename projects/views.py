@@ -10,6 +10,7 @@ from projects.models import Report, Comment
 from datetime import datetime
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from crowd_funding import auth
 
 import math
 import time
@@ -108,12 +109,18 @@ def launch_project(request):
 
 @login_required
 def admin_projects(request):
+    if not auth.is_super(request):
+        return redirect('login')
+
     projects = Project.objects.all()
 
     return render(request, 'projects/admin/all.html', {'projects':projects})
 
 @login_required
 def admin_reported_projects(request):
+    if not auth.is_super(request):
+        return redirect('login')
+
     user_id=request.session['user_id']
     projects=[]
     distinct = Report.objects.values(
@@ -142,6 +149,9 @@ def admin_reported_projects(request):
     # # project.delete()
     # return redirect('/admin/projects/reported_project')
 def admin_delete_reported_projects(request, id):
+    if not auth.is_super(request):
+        return redirect('login')
+
     project = Project.objects.get(pk=id)
     # print(project.id)
     project_donations,created=Donation.objects.get_or_create(project=project,amount=0)
@@ -159,6 +169,9 @@ def admin_delete_projects(request, id):
 
 @login_required
 def project_featured(request, id):
+    if not auth.is_super(request):
+        return redirect('login')
+
     project = Project.objects.get(pk=id)
     if(project.featured == 1):
         project.featured = 0
@@ -252,11 +265,17 @@ def rate(req,project_id):
 
 @login_required
 def all_reported_comments(request):
+    if not auth.is_super(request):
+        return redirect('login')
+
     all_reports = Report.objects.exclude(comment_id=None)
     reports = [all_reports.filter(comment_id=item['comment_id']).last() for item in Report.objects.values('comment_id').distinct()]
     return render(request, 'projects/admin/reported_comments.html', {'reports': reports} )
 
 def delete_comment(request, id):
+    if not auth.is_super(request):
+        return redirect('login')
+
     report = Report.objects.get(pk=id)
     comment = Comment.objects.get(pk=report.comment_id)
     comment.delete()

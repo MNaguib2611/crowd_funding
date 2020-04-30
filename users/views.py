@@ -152,7 +152,11 @@ def signin(request):
                     if user is not None:
                         auth.login(request, user)
                         request.session['user_id'] = user.id
-                        return redirect('home')
+
+                        if user.is_superuser:
+                            return redirect('/admin/projects/')
+                        else:
+                            return redirect('home')
                     else:
                         messages.info(request, 'Username OR Password is incorrect')
                         return render(request, 'login.html')

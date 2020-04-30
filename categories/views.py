@@ -3,10 +3,14 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from categories.models import Category
 from django.contrib.auth.decorators import login_required
+from crowd_funding import auth
 
 # Create your views here.
 @login_required
 def index(request):
+    if not auth.is_super(request):
+        return redirect('login')
+        
     categories = Category.objects.all()
 
     if request.method == "POST":
