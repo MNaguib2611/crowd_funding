@@ -20,7 +20,7 @@
 
                     </div>
                 </div>
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+{#                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>#}
             </form>
         </div>
     </nav>
@@ -63,13 +63,14 @@
                                 <p class="card-text text-truncate">{{ project.details }}</p>
                                 <h6 class="card-subtitle mb-2"><b>Total Target:</b> {{ project.target }}</h6>
                                 <h6 class="card-subtitle mb-2"><b>Current Target:</b> {{ project.current }}$</h6>
-                                <a href="{%  url 'project_show_url' project.id %}" class="btn btn-primary btn-sm">More Details</a>
+                                <a href="{% url 'project_show_url' project.id %}" class="btn btn-primary btn-sm">More
+                                    Details</a>
                                 <button id="donate" class="btn btn-info btn-sm" data-toggle="modal"
                                         data-title="{{ project.title }}"
                                         data-project_id="{{ project.id }}"
                                         data-target-donation="{{ project.target }}"
                                         data-current-donation="{{ project.current }}"
-                                        data-target="#donate-model" {% if project.target == project.current %}
+                                        data-target="#donate-model" {% if project.target == project.current or  project.is_reported %}
                                     {{ "disabled" }} {% endif %}>Donate
                                 </button>
                                 <a href="{% url 'report_project' project.id %}">
@@ -119,13 +120,14 @@
                             <p class="card-text text-truncate">{{ project.details }}</p>
                             <h6 class="card-subtitle mb-2"><b>Total Target:</b> {{ project.target }}</h6>
                             <h6 class="card-subtitle mb-2"><b>Current Target:</b> {{ project.current }}$</h6>
-                            <a href="{%  url 'project_show_url' project.id %}" class="btn btn-primary btn-sm">More Details</a>
+                            <a href="{% url 'project_show_url' project.id %}" class="btn btn-primary btn-sm">More
+                                Details</a>
                             <button id="donate" class="btn btn-info btn-sm" data-toggle="modal"
                                     data-title="{{ project.title }}"
                                     data-project_id="{{ project.id }}"
                                     data-target-donation="{{ project.target }}"
                                     data-current-donation="{{ project.current }}"
-                                    data-target="#donate-model" {% if project.target == project.current %}
+                                    data-target="#donate-model" {% if project.target == project.current or  project.is_reported %}
                                 {{ "disabled" }} {% endif %}>Donate
                             </button>
                             <a href="{% url 'report_project' project.id %}">
@@ -178,13 +180,14 @@
                             <p class="card-text text-truncate">{{ project.details }}</p>
                             <h6 class="card-subtitle mb-2"><b>Total Target:</b> {{ project.target }}</h6>
                             <h6 class="card-subtitle mb-2"><b>Current Target:</b> {{ project.current }}$</h6>
-                            <a href="{%  url 'project_show_url' project.id %}" class="btn btn-primary btn-sm">More Details</a>
+                            <a href="{% url 'project_show_url' project.id %}" class="btn btn-primary btn-sm">More
+                                Details</a>
                             <button id="donate" class="btn btn-info btn-sm" data-toggle="modal"
                                     data-title="{{ project.title }}"
                                     data-project_id="{{ project.id }}"
                                     data-target-donation="{{ project.target }}"
                                     data-current-donation="{{ project.current }}"
-                                    data-target="#donate-model" {% if project.target == project.current %}
+                                    data-target="#donate-model" {% if project.target == project.current or  project.is_reported %}
                                 {{ "disabled" }} {% endif %}>Donate
                             </button>
                             <a href="{% url 'report_project' project.id %}">
@@ -235,13 +238,14 @@
                             <p class="card-text text-truncate">{{ project.details }}</p>
                             <h6 class="card-subtitle mb-2"><b>Total Target:</b> {{ project.target }}</h6>
                             <h6 class="card-subtitle mb-2"><b>Current Target:</b> {{ project.current }}$</h6>
-                            <a href="{%  url 'project_show_url' project.id %}" class="btn btn-primary btn-sm">More Details</a>
+                            <a href="{% url 'project_show_url' project.id %}" class="btn btn-primary btn-sm">More
+                                Details</a>
                             <button id="donate" class="btn btn-info btn-sm" data-toggle="modal"
                                     data-title="{{ project.title }}"
                                     data-project_id="{{ project.id }}"
                                     data-target-donation="{{ project.target }}"
                                     data-current-donation="{{ project.current }}"
-                                    data-target="#donate-model" {% if project.target == project.current %}
+                                    data-target="#donate-model" {% if project.target == project.current or  project.is_reported %}
                                 {{ "disabled" }} {% endif %}>Donate
                             </button>
                             <a href="{% url 'report_project' project.id %}">
@@ -312,5 +316,7 @@
 {% block scripts %}
     <script src="{% static 'users/js/home.js' %}"></script>
     <script src="{% static 'users/js/donate.js' %}"></script>
-    <script src="{% static 'users/js/search.js' %}"></script>
+    <script src="{% static 'users/js/search.js' %}">
+
+    </script>
 {% endblock %}

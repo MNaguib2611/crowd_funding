@@ -307,7 +307,8 @@ def update_project(request, project_id):
     
 @login_required
 def home(req):
-    user_id = req.session['user_id']
+    print(get_user_model())
+    user_id = req.session.get('user_id')
     categories = Category.objects.all()
 
     latest_projects = project_is_reported(Project.objects.all().order_by('-start_date')[:5],user_id)
