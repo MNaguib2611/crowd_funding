@@ -55,5 +55,11 @@
     #user_profile .deleteBtn {
         background-color: #d84141;
         color: white;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .deleteDiv {
+        margin-left: 23%;
     }
     

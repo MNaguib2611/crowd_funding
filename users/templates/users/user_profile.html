@@ -75,7 +75,7 @@
                                     <h6 class="align-middle title">COUNTRY</h6>   
                                 </div>
                                 <div class="col-6" >
-                                    {% if user.country == None%}
+                                    {% if user.country == None or user.country == "" %}
                                         <p> You can add country </p>
                                         </div>
                                         <div class="col">
@@ -106,15 +106,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-3">
-                <div class="card operationCard">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item operationCardItem"><a href="{% url 'user_projects_url' %}">view projects</a></li>
-                        <li class="list-group-item operationCardItem"><a href="{% url 'user_donations_url' %}">view donations</a></li>
-                        <li class="list-group-item deleteBtn" data-toggle="modal" data-target="#deleteAccount">delete account</li>
-                    </ul>
-                </div>
-            </div>
+            
         </div>
         <br> <br>
         
@@ -173,6 +165,16 @@
                             </div>
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="deleteDiv">
+            <div class="col-4">
+                <div class="card operationCard">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item deleteBtn" data-toggle="modal" data-target="#deleteAccount">delete account</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -304,7 +306,8 @@
                     <form action="{% url 'edit_password_url' %}" method="POST" enctype="multipart/form-data"> 
                         {% csrf_token %} 
                         <label>Password</label>
-                        <input type="password" name="password" class="form-control edited_value" value="{{ user.password }}" required/></br />
+                        <input type="password" name="password" class="form-control edited_value" value="{{ user.password }}" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required/></br />
+                        <small>Format: Must contain upperCase, lowerCase, Number and at least 8 characters </small><br>
                 </div>
                 <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -385,7 +388,7 @@
                     <form action="{% url 'delete_account_url' %}" method="POST" enctype="multipart/form-data"> 
                         {% csrf_token %} 
                         <input type="checkbox" class="form-check-input" id="confirmDelete" style="margin-left: 6px;" required>
-                        <label class="form-check-label" for="confirmDelete">your account will be deleted</label><br /><br />
+                        <label class="form-check-label" for="confirmDelete">your account will be deleted permanently</label><br /><br />
                 </div>
                 <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
