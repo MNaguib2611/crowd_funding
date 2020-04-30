@@ -8,11 +8,13 @@ from users.models import CustomUser
 from projects.models import Report, Comment
 from datetime import datetime
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 import math
 import json
 import time
 
+@login_required
 def index(req):
     projects = project_is_reported(Project.objects.all())
     context = {
@@ -20,6 +22,7 @@ def index(req):
     }
     return render(req, 'projects/index.html', context)
 
+@login_required
 def launch_project(request):
     user_id=1 #will be replaced by logged user
 
@@ -100,12 +103,13 @@ def launch_project(request):
         } 
         return render(request,"projects/launch_project.html",context) 
 
-
+@login_required
 def admin_projects(request):
     projects = Project.objects.all()
 
     return render(request, 'projects/admin/all.html', {'projects':projects})
 
+@login_required
 def admin_reported_projects(request):
  
     projects=[]
@@ -127,6 +131,7 @@ def admin_delete_projects(request, id):
     project.delete()
     return redirect('/admin/projects/')
 
+@login_required
 def project_featured(request, id):
     project = Project.objects.get(pk=id)
     if(project.featured == 1):
@@ -139,6 +144,7 @@ def project_featured(request, id):
 
     return JsonResponse({'status':200})
 
+@login_required
 def show(req,project_id):
     user_id=1 #will be replaced by logged user
     project_data  = Project.objects.get(id=project_id)
@@ -216,6 +222,7 @@ def rate(req,project_id):
         new_rate.save()
     return redirect(f"/projects/{project_id}" )  
 
+@login_required
 def all_reported_comments(request):
     all_reports = Report.objects.exclude(comment_id=None)
     reports = [all_reports.filter(comment_id=item['comment_id']).last() for item in Report.objects.values('comment_id').distinct()]

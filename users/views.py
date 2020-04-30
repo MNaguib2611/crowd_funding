@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect
 
 from django.views.generic import View
 from django.contrib import messages
-from validate_email import validate_email
+# from validate_email import validate_email
 #from django.contrib.auth.models  import User, auth
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms  import UserCreationForm
@@ -40,9 +40,7 @@ from categories.models import Category
 from projects.models import Project, Donation, Report, Tag
 from utils.utils import project_is_reported
 import re
-
-
-
+from django.contrib.auth.decorators import login_required
 
 def email_validator(email):
     if len(email) > 7:
@@ -192,9 +190,11 @@ class ActivateAccountView(View):
         return render(request,'activate_failed.html')
 
 ##########################Home Page#############################################
+@login_required
 def home(request):
         return render(request,'home.html')
 
+@login_required
 def logOut(request):
         return render(request,'logout.html')
 
@@ -202,6 +202,7 @@ def logOut(request):
 
 
 ##################################################################################
+@login_required
 def view_user_profile(request, id):
     user = CustomUser.objects.filter(id=id)
     user = user[0]
@@ -250,12 +251,14 @@ def delete_account(request, id):
     CustomUser.objects.filter(pk=id).delete()     
     return redirect(view_user_profile, id)   # will be changed----->error here
 
+@login_required
 def user_donations(request, id):
     donations = Donation.objects.filter(user_id=id)
     projects = Project.objects.all()
     donations_data = {'donations': donations, 'projects': projects}
     return render(request, 'users/user_donations.html', donations_data)
-    
+
+@login_required    
 def user_projects(request, id):
     projects = Project.objects.filter(user_id=id)
     categories = Category.objects.all()
@@ -266,7 +269,7 @@ def delete_project(request, id, project_id):
     Project.objects.filter(pk=project_id).delete()
     return redirect(user_projects, id)
     
-
+@login_required
 def home(req):
     categories = Category.objects.all()
 
@@ -358,4 +361,4 @@ def search(req):
     return JsonResponse(list(projects),safe=False)
 
 def landing(request):
-    return redirect('/users/home')
+    return redirect('/home')

@@ -26,6 +26,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = '/login'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -84,7 +86,7 @@ DATABASES = {
         'NAME': 'crowd_funding',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': 'localhost', 
+        'HOST': '127.0.0.1', 
         'PORT': '3306',
         "OPTIONS": {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
