@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from .models import CustomUser
 from projects.models import Donation
@@ -32,7 +33,8 @@ from django.core.mail import EmailMessage
 from django.conf import  settings
 from django.contrib.auth import authenticate, login, logout
 from .forms import EditImgForm  
-from datetime import datetime
+from datetime import datetime , timedelta
+from django.utils import timezone
 
 
 
@@ -55,8 +57,9 @@ def phone_number_validator(phoneNumber):
     return None
 
 def validate_names(fname,lname):
-    if re.match("([A-Z][a-zA-Z]*)",fname):
-        if re.match("([A-Z][a-zA-Z]*)",lname):
+
+    if fname.isalpha():
+        if fname.isalpha():
             return True
     return None
 
@@ -116,6 +119,8 @@ def signup(request):
 
         user = User.objects.create_user(password = password, email = email, first_name = first_name, last_name = last_name, phone = phone, picture = picture)
         user.is_active=False
+        user_token=generate_token.make_token(user)
+        user.token=user_token
         user.save()
         current_site=get_current_site(request)
         email_subject='Activate your Account',
@@ -123,9 +128,10 @@ def signup(request):
         {
             'user':user,
             'domain':current_site.domain,
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-            'token':generate_token.make_token(user)
+            'uid': user.pk,
+            'token':user_token
         })
+       
         email_message = EmailMessage(
            email_subject,
            message,
@@ -133,14 +139,12 @@ def signup(request):
            [email] 
         )
         email_message.send()
-        
-        
         messages.add_message(request,messages.SUCCESS,'Account Created Successfully')
         messages.add_message(request,messages.SUCCESS,'please Activate your Account an Email sent fo Activation')
         print("user Created Successfully") 
         
-        return render(request,'login.html', context) 
-
+        # return render(request,'login.html', context) 
+        return redirect('login')
     else:            
         return render(request,'register.html', context)  
  
@@ -159,6 +163,7 @@ def signin(request):
                     print(user)
                     if user is not None:
                         auth.login(request, user)
+                        request.session['user_id'] = user.id
                         return redirect('home')
                     else:
                         messages.info(request, 'Username OR Password is incorrect')
@@ -173,20 +178,19 @@ def signin(request):
  #####################Activation##############################################     
 class ActivateAccountView(View):
     def get(self,request,uidb64,token):
-        try:
-            uid=force_text(urlsafe_base64_decode(uidb64))
-            user=User.objects.get(pk=uid)
-            print("fsss")
-            print(user)
-        except Exception as identifier:
-            user=None
+        user=User.objects.get(pk=uidb64)
+       
            
-        if user is not None and generate_token.check_token(user,token):
-            user.is_active=True
-            user.save()
-            print(user)
-            messages.add_message(request,messages.SUCCESS,'account activated successfully')
-            return redirect('login')
+        if user and (user.token==token):
+            past = timezone.now() - timedelta(days=1)            
+            if user.token_date >past:
+                user.is_active=True
+                user.save()
+                messages.add_message(request,messages.SUCCESS,'account activated successfully')
+                return redirect('login')
+            else:
+              messages.info(request, 'Token expired,please request a new token')
+              return render(request, 'login.html')  
         return render(request,'activate_failed.html')
 
 ##########################Home Page#############################################
@@ -211,6 +215,15 @@ def view_user_profile(request, id):
     return render(request, 'users/user_profile.html', user_data)
 
 def edit_photo(request, id):
+    if request.method == "POST":
+        if request.FILES['picture']:
+            folder = 'users/static/images'
+            picture = request.FILES['picture']
+            fs = FileSystemStorage(location=folder)
+            filename = fs.save(picture.name, picture)
+            uploaded_file_url = fs.url(filename)
+            photo = uploaded_file_url
+            CustomUser.objects.filter(pk=id).update(picture=photo)
     return redirect(view_user_profile, id)
     
 def edit_name(request, id):
@@ -249,7 +262,7 @@ def delete_account(request, id):
     # user = user[0]
     # if user.password == request.POST['pass']:   # will be changed and use ajax when using password to delete           
     CustomUser.objects.filter(pk=id).delete()     
-    return redirect(view_user_profile, id)   # will be changed----->error here
+    return redirect(signup)   # will be changed----->error here
 
 @login_required
 def user_donations(request, id):
@@ -270,6 +283,26 @@ def delete_project(request, id, project_id):
     return redirect(user_projects, id)
     
 @login_required
+def edit_project(request, id):
+    project = Project.objects.filter(id=id)
+    project = project[0]
+    categories = Category.objects.all()
+    project_data = {'categories': categories, 'project': project}
+    return render(request, 'users/edit_project.html', project_data)
+    
+def update_project(request, id, project_id):
+    title = request.POST['title']
+    details = request.POST['details']
+    target = request.POST['target']
+    current = request.POST['current']
+    start_date = request.POST['start_date']
+    end_date = request.POST['end_date']
+    category_id = request.POST['category']
+    Project.objects.filter(pk=project_id).update(title=title, details=details, target=target, current=current, 
+    start_date=start_date, end_date=end_date, category_id=category_id)
+    return redirect(user_projects, id)
+    
+
 def home(req):
     categories = Category.objects.all()
 
@@ -326,9 +359,10 @@ def get_projects_by_category(id):
     # return JsonResponse(data)
 
 def donate(req):
+    user_id = req.session['user_id']
     amount = int(req.POST.get('donation-val'))
     project_id=int(req.POST.get('project_id'))
-    user_id=1
+    user_id=user_id
     print(amount,project_id)
     project = Project.objects.get(id=project_id)
     if project.target - project.current >= amount:
@@ -340,7 +374,7 @@ def donate(req):
 
 
 def report_project(req,id):
-    user_id = 1
+    user_id = req.session['user_id']
     project_id=id
     report = Report(user_id=user_id,project_id=project_id)
     report.save()
@@ -348,7 +382,7 @@ def report_project(req,id):
     return redirect(req.META.get('HTTP_REFERER'))
 
 def report_comment(req,project_id,comment_id):
-    user_id = 1
+    user_id = req.session['user_id']
     report = Report(user_id=user_id,project_id=project_id,comment_id=comment_id)
     report.save()
 

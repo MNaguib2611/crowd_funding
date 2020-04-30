@@ -8,13 +8,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>{% block title %}{% endblock %}</title>
     <meta name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"/>
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"/>
     <meta name="msapplication-tap-highlight" content="no">
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"></script>
     {% load static %}
+    <link rel='icon' href='{% static "favicon.ico" %}' type='image/x-icon'/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"> -->
@@ -42,8 +43,8 @@
         <div class="app-header__logo">
             <!-- <div class="logo-src"></div> -->
             <a class="navbar-brand" href="/">
-                <img src="asset('imgs/LogoMakr_8FEAlV.png')}}" alt="Logo"
-                     style="width:180px;height:75px;margin-top:5px;">
+                <img src="{% static 'logo.png' %}" alt="Logo"
+                     style="width:180px;margin-top:2px;">
             </a>
             <div class="header__pane ml-auto">
                 <div>
@@ -89,7 +90,7 @@
                                         {% else %}
                                             {{user}}
                                         {% endif %}
-                                        <img width="42" class="rounded-circle" src="Auth::user()->avatar}}" alt="">
+                                        <img width="42" class="rounded-circle" src="{{user}}" alt="">
                                         <i class="fa fa-angle-down ml-2 opacity-8"></i>
                                     </a>
                                     <div tabindex="-1" role="menu" aria-hidden="true"
@@ -529,38 +530,38 @@
                         <li class="app-sidebar__heading">Home</li>
                         <li>
                             <a href="{% url 'home' %}" class="mm-active">
-                                <i class="metismenu-icon pe-7s-rocket"></i>
+                                <i class=" fas fa-home "></i>
                                 Home
                             </a>
                         </li>
                         <li class="app-sidebar__heading">Projects</li>
                         <li>
                             <a href="{% url 'index' %}">
-                                <i class="metismenu-icon pe-7s-display2"></i>
+                                <i class="fas fa-project-diagram"></i>
                                 All Projects
                             </a>
                             <a href="{% url 'launch' %}">
-                                <i class="metismenu-icon pe-7s-eyedropper">
+                                <i class="fas fa-calendar-plus"></i>
                                 </i>
                                 Create Project
                             </a>
-                            <a href="{% url 'user_projects_url' 1 %}">
-                                <i class="metismenu-icon pe-7s-eyedropper">
+                            <a href="{% url 'user_projects_url' user.id %}">
+                                <i class="fas fa-funnel-dollar"></i>
                                 </i>
                                 My Projects
                             </a>
                         </li>
                         <li class="app-sidebar__heading">Profile</li>
                         <li>
-                            <a href="{% url 'view_user_profile' 1  %}">
-                                <i class="metismenu-icon pe-7s-display2"></i>
+                            <a href="{% url 'view_user_profile' user.id  %}">
+                                <i class="fas fa-id-badge"></i>
                                 My Profile
                             </a>
                         </li>
                         <li class="app-sidebar__heading">donations</li>
                         <li>
-                            <a href="{% url 'user_donations_url' 1 %}">
-                                <i class="metismenu-icon pe-7s-display2"></i>
+                            <a href="{% url 'user_donations_url' user.id %}">
+                                <i class="fas fa-hand-holding-usd"></i>
                                 My Donations
                             </a>
                         </li>

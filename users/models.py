@@ -44,6 +44,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     picture = models.URLField(null=True)
     fb_page = models.URLField(null=True)
 
+    token      = models.CharField(max_length=255)
+    token_date = models.DateTimeField(auto_now=True)
+    
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     # date_joined = models.DateTimeField(default=timezone.now)
