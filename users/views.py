@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from .models import CustomUser
 from projects.models import Donation
@@ -212,6 +213,15 @@ def view_user_profile(request, id):
     return render(request, 'users/user_profile.html', user_data)
 
 def edit_photo(request, id):
+    if request.method == "POST":
+        if request.FILES['picture']:
+            folder = 'users/static/images'
+            picture = request.FILES['picture']
+            fs = FileSystemStorage(location=folder)
+            filename = fs.save(picture.name, picture)
+            uploaded_file_url = fs.url(filename)
+            photo = uploaded_file_url
+            CustomUser.objects.filter(pk=id).update(picture=photo)
     return redirect(view_user_profile, id)
     
 def edit_name(request, id):
