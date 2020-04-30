@@ -166,7 +166,7 @@ def show(request,project_id):
     project_data  = Project.objects.get(id=project_id)
     pictures_data = Picture.objects.filter(project_id=project_id)
     is_reported=Report.objects.filter(project_id=project_id,user_id=user_id);
-    comments = comment_is_reported(Comment.objects.filter(project_id=project_id))
+    comments = comment_is_reported(Comment.objects.filter(project_id=project_id),user_id)
     tags=project_data.tag_set.filter(project_id=project_id).values('tag')
     project_ids=Tag.objects.filter(tag__in=tags).exclude(project_id =project_id).values('project_id')
     print(project_ids)
