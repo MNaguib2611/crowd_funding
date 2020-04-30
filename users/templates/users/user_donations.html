@@ -22,6 +22,8 @@
                                 {% for project in projects %}
                                     {% if project.id == donation.project_id %}
                                         <td>{{ project.title }}</td>
+                                    {% elif donation.project_id == None%}
+                                        <td>The project has been removed</td>
                                     {% endif %}
                                 {% endfor %}
                                 <td>{{ donation.amount }}</td>
