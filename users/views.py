@@ -32,7 +32,8 @@ from django.core.mail import EmailMessage
 from django.conf import  settings
 from django.contrib.auth import authenticate, login, logout
 from .forms import EditImgForm  
-from datetime import datetime
+from datetime import datetime , timedelta
+from django.utils import timezone
 
 
 
@@ -57,8 +58,9 @@ def phone_number_validator(phoneNumber):
     return None
 
 def validate_names(fname,lname):
-    if re.match("([A-Z][a-zA-Z]*)",fname):
-        if re.match("([A-Z][a-zA-Z]*)",lname):
+
+    if fname.isalpha():
+        if fname.isalpha():
             return True
     return None
 
@@ -118,6 +120,8 @@ def signup(request):
 
         user = User.objects.create_user(password = password, email = email, first_name = first_name, last_name = last_name, phone = phone, picture = picture)
         user.is_active=False
+        user_token=generate_token.make_token(user)
+        user.token=user_token
         user.save()
         current_site=get_current_site(request)
         email_subject='Activate your Account',
@@ -125,9 +129,10 @@ def signup(request):
         {
             'user':user,
             'domain':current_site.domain,
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-            'token':generate_token.make_token(user)
+            'uid': user.pk,
+            'token':user_token
         })
+       
         email_message = EmailMessage(
            email_subject,
            message,
@@ -135,14 +140,12 @@ def signup(request):
            [email] 
         )
         email_message.send()
-        
-        
         messages.add_message(request,messages.SUCCESS,'Account Created Successfully')
         messages.add_message(request,messages.SUCCESS,'please Activate your Account an Email sent fo Activation')
         print("user Created Successfully") 
         
-        return render(request,'login.html', context) 
-
+        # return render(request,'login.html', context) 
+        return redirect('login')
     else:            
         return render(request,'register.html', context)  
  
@@ -175,20 +178,19 @@ def signin(request):
  #####################Activation##############################################     
 class ActivateAccountView(View):
     def get(self,request,uidb64,token):
-        try:
-            uid=force_text(urlsafe_base64_decode(uidb64))
-            user=User.objects.get(pk=uid)
-            print("fsss")
-            print(user)
-        except Exception as identifier:
-            user=None
+        user=User.objects.get(pk=uidb64)
+       
            
-        if user is not None and generate_token.check_token(user,token):
-            user.is_active=True
-            user.save()
-            print(user)
-            messages.add_message(request,messages.SUCCESS,'account activated successfully')
-            return redirect('login')
+        if user and (user.token==token):
+            past = timezone.now() - timedelta(days=1)            
+            if user.token_date >past:
+                user.is_active=True
+                user.save()
+                messages.add_message(request,messages.SUCCESS,'account activated successfully')
+                return redirect('login')
+            else:
+              messages.info(request, 'Token expired,please request a new token')
+              return render(request, 'login.html')  
         return render(request,'activate_failed.html')
 
 ##########################Home Page#############################################
