@@ -19,7 +19,7 @@ virtualenv [environment name]
 ```
 and activate it
 ```bash
-source newenv/bin/
+source  [environment name]/bin/activate
 ```
 
 7. Run the Following command to install the dependencies of the project inside the virtual environment
